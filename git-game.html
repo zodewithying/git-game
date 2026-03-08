@@ -1,0 +1,1959 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🌳 代码树的故事 - Git 冒险游戏</title>
+<link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --sky: #87CEEB;
+    --grass: #4CAF50;
+    --wood: #8B5E3C;
+    --leaf: #2E7D32;
+    --sun: #FFD700;
+    --cloud: #fff;
+    --btn-blue: #1976D2;
+    --btn-green: #388E3C;
+    --btn-orange: #F57C00;
+    --btn-red: #D32F2F;
+    --bg: #E3F2FD;
+    --card: #FFFDE7;
+    --border: #FBC02D;
+    --text: #333;
+    --highlight: #FF6F00;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'ZCOOL KuaiLe', 'Noto Sans SC', sans-serif;
+    background: linear-gradient(180deg, #87CEEB 0%, #B3E5FC 40%, #C8E6C9 100%);
+    min-height: 100vh;
+    color: var(--text);
+    overflow-x: hidden;
+  }
+
+  /* CLOUDS */
+  .clouds { position: fixed; top: 0; left: 0; width: 100%; height: 120px; pointer-events: none; z-index: 0; }
+  .cloud {
+    position: absolute;
+    background: white;
+    border-radius: 50px;
+    opacity: 0.85;
+    animation: drift linear infinite;
+  }
+  .cloud::before, .cloud::after {
+    content: '';
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+  }
+  .cloud.c1 { width: 120px; height: 40px; top: 20px; animation-duration: 30s; }
+  .cloud.c1::before { width: 60px; height: 60px; top: -30px; left: 15px; }
+  .cloud.c1::after { width: 40px; height: 40px; top: -20px; left: 60px; }
+  .cloud.c2 { width: 90px; height: 30px; top: 60px; animation-duration: 45s; animation-delay: -10s; }
+  .cloud.c2::before { width: 45px; height: 45px; top: -22px; left: 10px; }
+  .cloud.c2::after { width: 30px; height: 30px; top: -15px; left: 45px; }
+  .cloud.c3 { width: 150px; height: 45px; top: 10px; animation-duration: 60s; animation-delay: -25s; }
+  .cloud.c3::before { width: 70px; height: 70px; top: -35px; left: 20px; }
+  .cloud.c3::after { width: 50px; height: 50px; top: -25px; left: 80px; }
+  @keyframes drift { from { left: -200px; } to { left: 110%; } }
+
+  /* SUN */
+  .sun {
+    position: fixed; top: 20px; right: 40px;
+    width: 70px; height: 70px;
+    background: radial-gradient(circle, #FFD700, #FF9800);
+    border-radius: 50%;
+    box-shadow: 0 0 30px #FFD700, 0 0 60px #FFEB3B44;
+    animation: sunPulse 4s ease-in-out infinite;
+    z-index: 1;
+  }
+  @keyframes sunPulse { 0%,100% { box-shadow: 0 0 30px #FFD700; } 50% { box-shadow: 0 0 50px #FFD700, 0 0 80px #FFEB3B66; } }
+
+  /* MAIN LAYOUT */
+  #app {
+    position: relative;
+    z-index: 2;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px 16px 40px;
+  }
+
+  h1 {
+    text-align: center;
+    font-size: 2.5rem;
+    color: #1a237e;
+    text-shadow: 3px 3px 0 #FFD700, 5px 5px 0 #FF980044;
+    margin-bottom: 4px;
+    letter-spacing: 2px;
+  }
+  .subtitle {
+    text-align: center;
+    font-size: 1.1rem;
+    color: #2E7D32;
+    margin-bottom: 24px;
+    font-weight: 700;
+  }
+
+  /* PROGRESS BAR */
+  .progress-bar-wrap {
+    background: rgba(255,255,255,0.5);
+    border-radius: 20px;
+    height: 18px;
+    margin: 0 0 20px;
+    border: 2px solid #FBC02D;
+    overflow: hidden;
+  }
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #4CAF50, #8BC34A);
+    border-radius: 20px;
+    transition: width 0.6s cubic-bezier(.4,2,.6,1);
+    position: relative;
+  }
+  .progress-bar::after {
+    content: '🌟';
+    position: absolute;
+    right: -2px;
+    top: -4px;
+    font-size: 20px;
+    animation: bounce 0.8s ease-in-out infinite alternate;
+  }
+  @keyframes bounce { from { transform: translateY(0); } to { transform: translateY(-4px); } }
+
+  /* SCORE */
+  .score-area {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  .score-badge {
+    background: #FFD700;
+    border-radius: 30px;
+    padding: 6px 20px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    border: 3px solid #FF9800;
+    box-shadow: 2px 2px 0 #E65100;
+  }
+  .chapter-badge {
+    background: #7C4DFF;
+    color: white;
+    border-radius: 30px;
+    padding: 6px 20px;
+    font-size: 1rem;
+    font-weight: 700;
+    border: 3px solid #4527A0;
+    box-shadow: 2px 2px 0 #311B92;
+  }
+
+  /* CARD */
+  .card {
+    background: var(--card);
+    border-radius: 24px;
+    border: 4px solid var(--border);
+    padding: 28px 28px 20px;
+    margin-bottom: 20px;
+    box-shadow: 6px 6px 0 #F9A825, 0 10px 30px rgba(0,0,0,0.1);
+    position: relative;
+    overflow: hidden;
+    animation: cardIn 0.4s cubic-bezier(.4,2,.6,1);
+  }
+  @keyframes cardIn {
+    from { transform: translateY(30px) scale(0.95); opacity: 0; }
+    to   { transform: translateY(0) scale(1); opacity: 1; }
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, #FFD700, #FF9800, #4CAF50, #2196F3, #9C27B0);
+  }
+
+  .card-icon { font-size: 3rem; text-align: center; margin-bottom: 8px; animation: wiggle 2s ease-in-out infinite; }
+  @keyframes wiggle { 0%,100%{transform:rotate(-5deg)} 50%{transform:rotate(5deg)} }
+
+  .card-title {
+    font-size: 1.5rem;
+    color: #1a237e;
+    text-align: center;
+    margin-bottom: 12px;
+  }
+  .card-story {
+    font-size: 1.1rem;
+    line-height: 1.9;
+    color: #333;
+    background: rgba(255,255,255,0.7);
+    border-radius: 14px;
+    padding: 14px 18px;
+    border-left: 5px solid #4CAF50;
+    margin-bottom: 16px;
+  }
+  .card-story .emoji { font-size: 1.3rem; }
+
+  .cmd-box {
+    background: #1a237e;
+    color: #A5F3FC;
+    border-radius: 14px;
+    padding: 14px 20px;
+    font-family: 'Courier New', monospace;
+    font-size: 1.2rem;
+    text-align: center;
+    margin: 12px 0;
+    letter-spacing: 2px;
+    box-shadow: inset 0 2px 10px rgba(0,0,0,0.4);
+    border: 3px solid #303F9F;
+    position: relative;
+  }
+  .cmd-box::before { content: '$ '; color: #FFD700; font-weight: bold; }
+
+  .tip-box {
+    background: #E8F5E9;
+    border-radius: 12px;
+    padding: 10px 16px;
+    font-size: 0.95rem;
+    color: #1B5E20;
+    border: 2px dashed #4CAF50;
+    margin-top: 8px;
+  }
+
+  /* QUIZ */
+  .quiz-q {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a237e;
+    text-align: center;
+    margin-bottom: 18px;
+    line-height: 1.6;
+  }
+  .options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  @media (max-width: 500px) { .options-grid { grid-template-columns: 1fr; } }
+
+  .opt-btn {
+    background: white;
+    border: 3px solid #1976D2;
+    border-radius: 16px;
+    padding: 14px 10px;
+    font-size: 1.05rem;
+    font-family: 'ZCOOL KuaiLe', sans-serif;
+    cursor: pointer;
+    transition: transform 0.15s, background 0.15s, box-shadow 0.15s;
+    box-shadow: 3px 3px 0 #1976D2;
+    color: #1a237e;
+  }
+  .opt-btn:hover:not(:disabled) {
+    background: #E3F2FD;
+    transform: translateY(-3px);
+    box-shadow: 3px 6px 0 #1976D2;
+  }
+  .opt-btn.correct {
+    background: #C8E6C9;
+    border-color: #388E3C;
+    box-shadow: 3px 3px 0 #388E3C;
+    color: #1B5E20;
+    animation: popIn 0.3s ease;
+  }
+  .opt-btn.wrong {
+    background: #FFCDD2;
+    border-color: #D32F2F;
+    box-shadow: 3px 3px 0 #D32F2F;
+    color: #B71C1C;
+    animation: shake 0.4s ease;
+  }
+  @keyframes popIn { 0%{transform:scale(0.9)} 60%{transform:scale(1.08)} 100%{transform:scale(1)} }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-8px)} 75%{transform:translateX(8px)} }
+
+  /* FEEDBACK */
+  .feedback {
+    border-radius: 16px;
+    padding: 14px 20px;
+    margin-top: 14px;
+    font-size: 1.1rem;
+    text-align: center;
+    font-weight: 700;
+    animation: fadeUp 0.35s ease;
+  }
+  .feedback.correct { background: #E8F5E9; color: #1B5E20; border: 3px solid #4CAF50; }
+  .feedback.wrong   { background: #FFEBEE; color: #B71C1C; border: 3px solid #EF9A9A; }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+  /* TREE VISUALIZER */
+  .tree-area {
+    background: linear-gradient(180deg, #E8F5E9 0%, #F1F8E9 100%);
+    border-radius: 18px;
+    border: 3px solid #81C784;
+    padding: 20px;
+    margin: 10px 0 16px;
+    min-height: 140px;
+    position: relative;
+    overflow: hidden;
+  }
+  .tree-ground {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 30px;
+    background: linear-gradient(180deg, #8D6E63, #6D4C41);
+    border-radius: 0 0 15px 15px;
+  }
+  .git-tree {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 0;
+    padding-bottom: 30px;
+    min-height: 120px;
+  }
+  .branch {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    position: relative;
+  }
+  .commit-node {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    border: 3px solid rgba(0,0,0,0.2);
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+    animation: popIn 0.5s ease;
+    cursor: default;
+    transition: transform 0.2s;
+  }
+  .commit-node:hover { transform: scale(1.2); }
+  .commit-node.main-node { background: linear-gradient(135deg, #42A5F5, #1976D2); }
+  .commit-node.feature-node { background: linear-gradient(135deg, #66BB6A, #388E3C); }
+  .commit-node.head { border: 4px solid #FFD700; box-shadow: 0 0 12px #FFD700; }
+  .branch-line {
+    width: 4px;
+    background: linear-gradient(180deg, #1976D2, #42A5F5);
+    border-radius: 2px;
+    flex: 1;
+    min-height: 16px;
+  }
+  .branch-label {
+    font-size: 0.75rem;
+    background: #1976D2;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 10px;
+    white-space: nowrap;
+    margin-bottom: 4px;
+  }
+  .branch-label.feature { background: #388E3C; }
+
+  /* DRAG SORT QUIZ */
+  .drag-area {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 12px 0;
+  }
+  .drag-item {
+    background: white;
+    border: 3px solid #7C4DFF;
+    border-radius: 14px;
+    padding: 12px 18px;
+    font-size: 1rem;
+    cursor: grab;
+    transition: transform 0.15s, box-shadow 0.15s;
+    box-shadow: 3px 3px 0 #7C4DFF;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .drag-item:active { cursor: grabbing; transform: scale(1.03); box-shadow: 5px 5px 0 #7C4DFF; }
+  .drag-item.dragging { opacity: 0.5; }
+  .drag-item.over { border-color: #FF9800; background: #FFF3E0; }
+  .drag-handle { color: #aaa; font-size: 1.2rem; }
+
+  /* NAV BUTTONS */
+  .btn-row {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 16px;
+  }
+  .btn {
+    font-family: 'ZCOOL KuaiLe', sans-serif;
+    font-size: 1.1rem;
+    padding: 12px 28px;
+    border-radius: 50px;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+    box-shadow: 4px 4px 0 rgba(0,0,0,0.25);
+  }
+  .btn:hover { transform: translateY(-3px); box-shadow: 4px 7px 0 rgba(0,0,0,0.25); }
+  .btn:active { transform: translateY(0); box-shadow: 2px 2px 0 rgba(0,0,0,0.25); }
+  .btn-next { background: linear-gradient(135deg, #42A5F5, #1976D2); color: white; }
+  .btn-check { background: linear-gradient(135deg, #66BB6A, #388E3C); color: white; }
+  .btn-replay { background: linear-gradient(135deg, #FFB74D, #F57C00); color: white; }
+  .btn-home { background: linear-gradient(135deg, #CE93D8, #7B1FA2); color: white; }
+
+  /* CELEBRATE */
+  .confetti-wrap {
+    position: fixed; top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 100;
+  }
+  .confetti-piece {
+    position: absolute;
+    width: 12px; height: 12px;
+    border-radius: 2px;
+    animation: confettiFall linear forwards;
+  }
+  @keyframes confettiFall {
+    0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+  }
+
+  /* CHAPTER SELECT */
+  .chapters-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-top: 16px;
+  }
+  .chapter-card {
+    background: white;
+    border-radius: 20px;
+    border: 4px solid #FBC02D;
+    padding: 20px 16px;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 4px 4px 0 #F9A825;
+  }
+  .chapter-card:hover { transform: translateY(-5px) rotate(-1deg); box-shadow: 6px 9px 0 #F9A825; }
+  .chapter-card .ch-icon { font-size: 2.5rem; margin-bottom: 8px; }
+  .chapter-card .ch-title { font-size: 1rem; font-weight: 700; color: #1a237e; }
+  .chapter-card .ch-desc { font-size: 0.85rem; color: #666; margin-top: 4px; }
+  .chapter-card.locked { opacity: 0.5; cursor: not-allowed; filter: grayscale(1); }
+  .chapter-card.done { border-color: #4CAF50; box-shadow: 4px 4px 0 #4CAF50; }
+  .chapter-card.done::after { content: '✅'; position: absolute; top: 8px; right: 12px; font-size: 1.2rem; }
+  .chapter-card { position: relative; }
+
+  /* COMPLETION */
+  .completion {
+    text-align: center;
+    padding: 10px 0;
+  }
+  .trophy { font-size: 5rem; animation: trophyBounce 1s ease infinite alternate; }
+  @keyframes trophyBounce { from{transform:scale(1) rotate(-5deg)} to{transform:scale(1.15) rotate(5deg)} }
+  .completion h2 { font-size: 2rem; color: #1a237e; margin: 12px 0 6px; }
+  .completion p { font-size: 1.1rem; color: #555; margin-bottom: 16px; }
+  .stars { font-size: 2rem; letter-spacing: 4px; }
+
+  /* FILL BLANK */
+  .fill-input {
+    width: 100%;
+    font-family: 'ZCOOL KuaiLe', sans-serif;
+    font-size: 1.2rem;
+    padding: 12px 16px;
+    border-radius: 14px;
+    border: 3px solid #1976D2;
+    background: white;
+    color: #1a237e;
+    margin: 12px 0;
+    box-shadow: inset 2px 2px 8px rgba(25,118,210,0.08);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .fill-input:focus { border-color: #FF9800; box-shadow: 0 0 0 3px #FFD70044; }
+
+  /* MATCH QUIZ */
+  .match-area {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 12px 0;
+  }
+  .match-col { display: flex; flex-direction: column; gap: 10px; }
+  .match-item {
+    background: white;
+    border: 3px solid #9C27B0;
+    border-radius: 14px;
+    padding: 10px 16px;
+    font-size: 1rem;
+    cursor: pointer;
+    box-shadow: 3px 3px 0 #9C27B0;
+    transition: transform 0.15s, background 0.15s;
+    text-align: center;
+    min-width: 120px;
+  }
+  .match-item:hover { background: #F3E5F5; transform: translateY(-2px); }
+  .match-item.selected { background: #CE93D8; border-color: #7B1FA2; color: white; }
+  .match-item.matched-ok { background: #C8E6C9; border-color: #388E3C; color: #1B5E20; cursor: default; }
+  .match-item.matched-err { background: #FFCDD2; border-color: #D32F2F; animation: shake 0.4s ease; }
+  .match-item.right-side { border-color: #FF9800; box-shadow: 3px 3px 0 #FF9800; }
+  .match-item.right-side:hover { background: #FFF3E0; }
+  .match-item.right-side.selected { background: #FFB74D; border-color: #E65100; color: white; }
+
+  /* FORK SIMULATION */
+  .fork-sim {
+    margin: 12px 0;
+  }
+  .fork-universe {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 14px 0;
+  }
+  .github-account {
+    background: white;
+    border-radius: 18px;
+    border: 3px solid #ccc;
+    padding: 14px 16px;
+    min-width: 160px;
+    text-align: center;
+    box-shadow: 3px 3px 0 #ccc;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    flex: 1;
+    max-width: 220px;
+  }
+  .github-account.owner  { border-color: #1976D2; box-shadow: 3px 3px 0 #1976D2; }
+  .github-account.mine   { border-color: #E91E63; box-shadow: 3px 3px 0 #E91E63; }
+  .github-account.mine.has-fork { border-color: #8D6E63; box-shadow: 3px 3px 0 #8D6E63; background: #FFF8F6; }
+  .account-avatar { font-size: 2rem; margin-bottom: 4px; }
+  .account-name   { font-weight: 700; color: #1a237e; font-size: 0.95rem; margin-bottom: 8px; }
+  .repo-item {
+    background: #F5F5F5;
+    border-radius: 10px;
+    padding: 8px 10px;
+    font-size: 0.88rem;
+    margin-bottom: 6px;
+    border: 2px solid #E0E0E0;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .repo-item.forked { background: #FFF3E0; border-color: #FF9800; color: #E65100; animation: popIn 0.5s ease; }
+  .fork-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    padding: 0 4px;
+    animation: arrowPulse 1.5s ease-in-out infinite;
+  }
+  @keyframes arrowPulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.2) rotate(5deg)} }
+  .fork-btn-area { text-align: center; margin: 10px 0; }
+  .fork-big-btn {
+    font-family: 'ZCOOL KuaiLe', sans-serif;
+    font-size: 1.3rem;
+    padding: 14px 32px;
+    border-radius: 50px;
+    border: 4px solid #8D6E63;
+    background: linear-gradient(135deg, #BCAAA4, #8D6E63);
+    color: white;
+    cursor: pointer;
+    box-shadow: 5px 5px 0 #5D4037;
+    transition: transform 0.15s, box-shadow 0.15s;
+    animation: gentleBounce 2s ease-in-out infinite;
+  }
+  .fork-big-btn:hover { transform: translateY(-4px); box-shadow: 5px 9px 0 #5D4037; }
+  .fork-big-btn:disabled { opacity: 0.5; animation: none; cursor: default; }
+  @keyframes gentleBounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
+  .fork-steps-visual {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 12px 0;
+    font-size: 0.9rem;
+  }
+  .fork-step-item {
+    background: white;
+    border: 2px solid #ddd;
+    border-radius: 30px;
+    padding: 5px 12px;
+    color: #999;
+    transition: all 0.4s;
+  }
+  .fork-step-item.active { border-color: #8D6E63; color: #5D4037; background: #FFF3E0; font-weight: 700; }
+  .fork-step-item.done   { border-color: #4CAF50; color: #2E7D32; background: #E8F5E9; }
+  .fork-step-arrow { color: #ccc; font-size: 1rem; }
+
+
+  .pr-card {
+    background: white;
+    border-radius: 16px;
+    border: 3px solid #E91E63;
+    padding: 16px 20px;
+    margin: 12px 0;
+    box-shadow: 3px 3px 0 #E91E63;
+  }
+  .pr-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+  .pr-avatar {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    font-size: 1.6rem;
+    display: flex; align-items: center; justify-content: center;
+    border: 3px solid #E91E63;
+    background: #FCE4EC;
+  }
+  .pr-meta { flex: 1; }
+  .pr-title { font-weight: 700; color: #1a237e; font-size: 1rem; }
+  .pr-subtitle { font-size: 0.85rem; color: #888; }
+  .pr-diff {
+    background: #F8F8F8;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-family: monospace;
+    font-size: 0.95rem;
+    margin: 10px 0;
+    border-left: 4px solid #4CAF50;
+  }
+  .pr-diff .add { color: #2E7D32; }
+  .pr-diff .del { color: #C62828; }
+  .pr-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+  .pr-btn {
+    font-family: 'ZCOOL KuaiLe', sans-serif;
+    font-size: 1rem;
+    padding: 10px 20px;
+    border-radius: 50px;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+    box-shadow: 3px 3px 0 rgba(0,0,0,0.2);
+    flex: 1;
+    min-width: 100px;
+  }
+  .pr-btn:hover { transform: translateY(-2px); }
+  .pr-btn.approve { background: linear-gradient(135deg,#66BB6A,#388E3C); color:white; }
+  .pr-btn.comment { background: linear-gradient(135deg,#FFB74D,#F57C00); color:white; }
+  .pr-btn.reject  { background: linear-gradient(135deg,#EF9A9A,#D32F2F); color:white; }
+
+  /* CONFLICT SIM */
+  .conflict-box {
+    background: #1a237e;
+    color: #E0E0E0;
+    border-radius: 14px;
+    padding: 16px 20px;
+    font-family: monospace;
+    font-size: 0.95rem;
+    line-height: 1.8;
+    margin: 12px 0;
+    border: 3px solid #303F9F;
+  }
+  .conflict-box .marker { color: #FFD700; font-weight: bold; }
+  .conflict-box .ver-a  { color: #80DEEA; }
+  .conflict-box .ver-b  { color: #F48FB1; }
+  .conflict-choices { display: flex; flex-direction: column; gap: 10px; margin: 12px 0; }
+  .conflict-choice {
+    background: white;
+    border: 3px solid #7C4DFF;
+    border-radius: 14px;
+    padding: 12px 16px;
+    cursor: pointer;
+    font-family: 'ZCOOL KuaiLe', sans-serif;
+    font-size: 1rem;
+    box-shadow: 3px 3px 0 #7C4DFF;
+    transition: transform 0.15s, background 0.15s;
+    color: #1a237e;
+  }
+  .conflict-choice:hover:not(:disabled) { background: #EDE7F6; transform: translateY(-2px); }
+  .conflict-choice.chosen-ok  { background: #C8E6C9; border-color: #388E3C; color: #1B5E20; }
+  .conflict-choice.chosen-bad { background: #FFCDD2; border-color: #D32F2F; }
+
+
+  .scroll-text {
+    display: inline-block;
+    overflow: hidden;
+    border-right: 3px solid #1976D2;
+    white-space: normal;
+    animation: blink 0.8s step-end infinite;
+  }
+  @keyframes blink { from,to{border-color:transparent} 50%{border-color:#1976D2} }
+
+  /* MINI MAP */
+  .mini-map {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    justify-content: center;
+    margin: 8px 0 16px;
+    flex-wrap: wrap;
+  }
+  .map-dot {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background: #ccc;
+    border: 2px solid #aaa;
+    font-size: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s;
+  }
+  .map-dot.done { background: #4CAF50; border-color: #2E7D32; color: white; }
+  .map-dot.current { background: #FFD700; border-color: #F57C00; animation: pulseDot 1s ease-in-out infinite; }
+  @keyframes pulseDot { 0%,100%{transform:scale(1)} 50%{transform:scale(1.2)} }
+  .map-line { width: 16px; height: 3px; background: #ccc; border-radius: 2px; }
+  .map-line.done { background: #4CAF50; }
+
+</style>
+</head>
+<body>
+
+<div class="clouds">
+  <div class="cloud c1"></div>
+  <div class="cloud c2"></div>
+  <div class="cloud c3"></div>
+</div>
+<div class="sun"></div>
+
+<div id="app">
+  <h1>🌳 代码树的故事</h1>
+  <p class="subtitle">和小松鼠一起学 Git！</p>
+  <div id="root"></div>
+</div>
+
+<div class="confetti-wrap" id="confetti"></div>
+
+<script>
+// =========== DATA ===========
+const CHAPTERS = [
+  {
+    id: 0,
+    icon: '📦',
+    title: '什么是仓库？',
+    desc: 'Git 的家',
+    color: '#42A5F5',
+    steps: [
+      {
+        type: 'story',
+        icon: '🐿️',
+        title: '小松鼠的笔记本',
+        text: `想象你有一个<strong>魔法笔记本</strong>📓，每次你写完一段故事，它都能<strong>记住</strong>你写的每一个版本！\n\n哪怕你把今天的内容全删掉，也能找回昨天写的内容。\n\n这个魔法笔记本，在电脑里叫做 <strong>Git 仓库</strong>（英文：Repository）。`,
+        cmd: 'git init',
+        cmdDesc: '这个咒语能创建一个新的魔法笔记本！',
+        tip: '💡 "init" 是 initialize（初始化）的缩写，意思是"开始"。'
+      },
+      {
+        type: 'quiz_choice',
+        q: '🐿️ 小松鼠问你：Git 仓库是什么？',
+        options: [
+          { text: '🏠 存放代码的魔法盒子，能记住所有历史', correct: true },
+          { text: '🎮 一种电脑游戏', correct: false },
+          { text: '🌈 一种画图软件', correct: false },
+          { text: '📺 看视频的程序', correct: false },
+        ],
+        okMsg: '太棒了！仓库就是存放代码的魔法盒子！🎉',
+        errMsg: '再想想哦！仓库是用来记录代码历史的！'
+      }
+    ]
+  },
+  {
+    id: 1,
+    icon: '📸',
+    title: '拍快照！commit',
+    desc: '保存你的修改',
+    color: '#66BB6A',
+    steps: [
+      {
+        type: 'story',
+        icon: '📸',
+        title: '给故事拍照片',
+        text: `你在魔法笔记本里写了一段精彩的故事。\n\n为了让笔记本记住<strong>这一刻</strong>的内容，你需要<strong>拍一张照片</strong>！\n\n在 Git 里，这叫做 <strong>提交（commit）</strong>。每次提交就像给故事拍一张照，以后随时可以翻看。\n\n每张照片都有一句<strong>备注</strong>，说明你改了什么，方便以后查找！`,
+        cmd: 'git commit -m "我加了一个新角色"',
+        cmdDesc: '拍一张快照，并写上备注说明修改内容',
+        tip: '💡 "-m" 后面的引号里面写的是备注（message）。记得说清楚你做了什么改变！'
+      },
+      {
+        type: 'story',
+        icon: '🗂️',
+        title: '先放进"待拍区"',
+        text: `不过，拍照前要先把想保存的内容<strong>放进"待拍区"</strong>（暂存区）！\n\n就像拍全家福之前，要先让大家<strong>站到镜头前</strong>一样。\n\nGit 里的"站到镜头前"叫做 <strong>add（添加）</strong>。`,
+        cmd: 'git add 故事.txt',
+        cmdDesc: '把"故事.txt"这个文件放进待拍区',
+        tip: '💡 想把所有修改都放进待拍区？用 git add . （点号代表全部！）'
+      },
+      {
+        type: 'quiz_order',
+        q: '📋 把下面的步骤拖到正确的顺序！',
+        items: [
+          { id: 'a', text: '📝 修改文件内容', order: 0 },
+          { id: 'b', text: '📸 git commit 拍快照', order: 2 },
+          { id: 'c', text: '🗂️ git add 放进待拍区', order: 1 },
+        ],
+        okMsg: '顺序完全正确！你掌握了 commit 的流程！🌟',
+        errMsg: '顺序不太对哦！先修改 → 再 add → 最后 commit'
+      },
+      {
+        type: 'quiz_choice',
+        q: '📸 git commit -m 里面的 -m 是什么意思？',
+        options: [
+          { text: '🖊️ 写备注说明，告诉大家改了什么', correct: true },
+          { text: '🔇 让 Git 静音', correct: false },
+          { text: '🔮 施魔法', correct: false },
+          { text: '📧 发送邮件', correct: false },
+        ],
+        okMsg: '正确！-m 后面写的就是这次提交的说明！',
+        errMsg: '不对哦！-m 是 message（消息/备注）的意思！'
+      }
+    ]
+  },
+  {
+    id: 2,
+    icon: '🌿',
+    title: '树枝！branch',
+    desc: '探索多条路',
+    color: '#AB47BC',
+    steps: [
+      {
+        type: 'story',
+        icon: '🌳',
+        title: '故事的分叉路',
+        text: `你在写故事，想试试一个新结局：让主角选择去森林还是去海边。\n\n但你不想破坏原来的故事！\n\n这时候，Git 可以帮你<strong>长出一根新树枝</strong>！\n\n你在新树枝上试验新结局，原来的主干<strong>完全不受影响</strong>。如果新结局很好，再把树枝合回主干！`,
+        treeDemo: {
+          commits: [
+            { id: 1, emoji: '🌱', type: 'main', label: '开始' },
+            { id: 2, emoji: '📖', type: 'main', label: '第一章' },
+            { id: 3, emoji: '🔀', type: 'main', label: '分叉点' },
+          ],
+          branch: [
+            { id: 4, emoji: '🌊', type: 'feature', label: '海边结局' },
+          ]
+        },
+        cmd: 'git branch 海边结局',
+        cmdDesc: '创建一根叫"海边结局"的新树枝',
+        tip: '💡 git checkout 树枝名  —— 切换到那根树枝上去工作！'
+      },
+      {
+        type: 'quiz_choice',
+        q: '🌳 为什么我们要创建新的 branch（树枝）？',
+        options: [
+          { text: '🔬 在不影响原来内容的情况下，安全地试验新想法', correct: true },
+          { text: '🌈 让代码变得更花哨好看', correct: false },
+          { text: '⚡ 让电脑运行得更快', correct: false },
+          { text: '🔒 给代码加密', correct: false },
+        ],
+        okMsg: '说得太准确了！新树枝就是用来安全探索的！🌿',
+        errMsg: '再想想！树枝的作用是让我们安全地试验新想法！'
+      },
+      {
+        type: 'quiz_fill',
+        q: '✍️ 填空：创建新树枝的命令是 git ______ 新树枝名',
+        answer: 'branch',
+        hint: '提示：英文"树枝"叫什么？',
+        okMsg: '完全正确！git branch 就是创建新树枝的命令！',
+        errMsg: '是 branch 哦！英文"树枝"= branch！'
+      }
+    ]
+  },
+  {
+    id: 3,
+    icon: '🤝',
+    title: '合并！merge',
+    desc: '把树枝合回来',
+    color: '#FF7043',
+    steps: [
+      {
+        type: 'story',
+        icon: '🤝',
+        title: '树枝合回主干',
+        text: `你在"海边结局"的树枝上写完了新故事，感觉很棒！\n\n现在想把它<strong>合并回主干</strong>，让大家都能看到这个精彩结局。\n\n这个操作叫做 <strong>merge（合并）</strong>！\n\n就像把两段故事<strong>拼在一起</strong>，变成一个更完整的故事！`,
+        cmd: 'git merge 海边结局',
+        cmdDesc: '把"海边结局"树枝合并到当前所在的主干',
+        tip: '💡 合并后，新树枝就完成了历史使命，可以删掉了！'
+      },
+      {
+        type: 'quiz_match',
+        q: '🔗 连一连！把 Git 命令和它的意思配对',
+        leftItems: [
+          { id: 'l1', text: 'git init' },
+          { id: 'l2', text: 'git add' },
+          { id: 'l3', text: 'git commit' },
+          { id: 'l4', text: 'git branch' },
+          { id: 'l5', text: 'git merge' },
+        ],
+        rightItems: [
+          { id: 'r3', text: '📸 拍快照保存' },
+          { id: 'r5', text: '🤝 合并树枝' },
+          { id: 'r1', text: '📦 创建仓库' },
+          { id: 'r4', text: '🌿 创建树枝' },
+          { id: 'r2', text: '🗂️ 放入待拍区' },
+        ],
+        pairs: { l1:'r1', l2:'r2', l3:'r3', l4:'r4', l5:'r5' }
+      }
+    ]
+  },
+  {
+    id: 4,
+    icon: '☁️',
+    title: '云端分享！push',
+    desc: '分享给全世界',
+    color: '#26A69A',
+    steps: [
+      {
+        type: 'story',
+        icon: '☁️',
+        title: '把故事上传到云上',
+        text: `你的故事存在自己的电脑上，只有你能看到。\n\n如果想<strong>分享给朋友</strong>，或者换一台电脑继续写，就需要把故事<strong>上传到云端</strong>！\n\n这个云端服务器在 Git 里叫做 <strong>远程仓库（remote）</strong>。\n\n最著名的是 <strong>GitHub</strong> 🐙 —— 全世界程序员的代码图书馆！`,
+        cmd: 'git push',
+        cmdDesc: '把本地的代码推送（push）到云端',
+        tip: '💡 push = 推送。git pull = 从云端拉取别人的更新！'
+      },
+      {
+        type: 'quiz_choice',
+        q: '☁️ git push 是什么意思？',
+        options: [
+          { text: '📤 把自己电脑上的代码上传到云端', correct: true },
+          { text: '📥 从云端下载别人的代码', correct: false },
+          { text: '🗑️ 删除所有代码', correct: false },
+          { text: '🔍 搜索代码', correct: false },
+        ],
+        okMsg: 'push = 推送 = 上传！你记住了！📤',
+        errMsg: 'push 是"推"，所以是上传到云端哦！'
+      },
+      {
+        type: 'quiz_choice',
+        q: '🐙 GitHub 是什么？',
+        options: [
+          { text: '📚 全世界程序员存放和分享代码的云端图书馆', correct: true },
+          { text: '🐠 一个养鱼的网站', correct: false },
+          { text: '🎮 一个游戏平台', correct: false },
+          { text: '🎵 一个音乐软件', correct: false },
+        ],
+        okMsg: 'GitHub 就是代码的图书馆！全世界的程序员都在用！🌍',
+        errMsg: 'GitHub 是全球最大的代码分享平台哦！'
+      }
+    ]
+  },
+  {
+    id: 5,
+    icon: '👯',
+    title: '一起合作！clone & pull',
+    desc: '和朋友共同写故事',
+    color: '#00ACC1',
+    steps: [
+      {
+        type: 'story',
+        icon: '👯',
+        title: '朋友也想参与！',
+        text: `你的好朋友小花看到了你在 GitHub 上的故事，她也想一起写！\n\n她需要先把你的故事<strong>复制一份到自己的电脑</strong>上。\n\n这个操作叫做 <strong>clone（克隆）</strong>🐑，就像用复印机把故事复印一份带回家！`,
+        cmd: 'git clone https://github.com/你的名字/故事.git',
+        cmdDesc: '把 GitHub 上的仓库复制到自己电脑',
+        tip: '💡 clone 只需要做一次！之后小花就有了完整的故事副本。'
+      },
+      {
+        type: 'story',
+        icon: '📥',
+        title: '拉取最新的内容',
+        text: `小花克隆了故事之后，你又更新了内容！\n\n小花的电脑上还是旧版本，她需要把你的<strong>新内容"拉"过来</strong>。\n\n这个操作叫做 <strong>pull（拉取）</strong>📥，就像把云上最新的更新<strong>下载到自己电脑</strong>！\n\n记住：<strong>push = 推上去</strong>☁️，<strong>pull = 拉下来</strong>📥`,
+        cmd: 'git pull',
+        cmdDesc: '把云端最新的内容拉到自己的电脑',
+        tip: '💡 养成好习惯：每次开始写东西之前，先 git pull 一下，确保自己有最新版本！'
+      },
+      {
+        type: 'quiz_choice',
+        q: '📥 小花想把你最新写的内容同步到她的电脑，应该用什么命令？',
+        options: [
+          { text: '📥 git pull —— 从云端拉取最新内容', correct: true },
+          { text: '📤 git push —— 上传到云端', correct: false },
+          { text: '📦 git init —— 创建新仓库', correct: false },
+          { text: '🐑 git clone —— 复制仓库', correct: false },
+        ],
+        okMsg: '正确！pull = 拉取 = 把云端新内容下载到自己电脑！',
+        errMsg: 'pull 是"拉"，把最新内容从云端拉下来！'
+      },
+      {
+        type: 'quiz_choice',
+        q: '🐑 小花第一次想参与你的项目，她应该怎么做？',
+        options: [
+          { text: '🐑 git clone —— 先复制整个仓库到自己电脑', correct: true },
+          { text: '📤 git push —— 直接上传', correct: false },
+          { text: '🌿 git branch —— 创建新树枝', correct: false },
+          { text: '📸 git commit —— 先拍照', correct: false },
+        ],
+        okMsg: 'clone 就是把仓库完整复制一份，第一次合作必须做的第一步！🐑',
+        errMsg: '第一次参与别人的项目，要先用 git clone 复制下来！'
+      },
+      {
+        type: 'quiz_order',
+        q: '📋 把小花参与合作的步骤排好顺序！',
+        items: [
+          { id: 'a', text: '🐑 git clone 复制仓库', order: 0 },
+          { id: 'b', text: '📤 git push 上传修改', order: 3 },
+          { id: 'c', text: '📥 git pull 拉取最新内容', order: 1 },
+          { id: 'd', text: '✏️ 修改内容并 commit', order: 2 },
+        ],
+        okMsg: '完美！clone → pull → 修改commit → push，这就是合作的基本流程！🎉',
+        errMsg: '顺序是：先clone复制 → pull拉最新 → 修改commit → push上传'
+      }
+    ]
+  },
+  {
+    id: 6,
+    icon: '🙋',
+    title: 'Pull Request！',
+    desc: '请求合并你的修改',
+    color: '#E91E63',
+    steps: [
+      {
+        type: 'story',
+        icon: '🙋',
+        title: '什么是 Pull Request？',
+        text: `小花在自己的树枝上写好了新内容，想合并到主故事里。\n\n但是，她<strong>不能直接合并</strong>！因为主故事是你的，需要你来<strong>审查和同意</strong>。\n\n所以小花发了一个 <strong>Pull Request（简称 PR）</strong>，就像举手说：\n\n<strong>"你好！我写了一些新内容，你能不能看看？如果觉得好，请把它加进去！"</strong> 🙋`,
+        tip: '💡 Pull Request = 拉取请求。小花请求你：把她的内容"pull（拉）"进主分支！'
+      },
+      {
+        type: 'story',
+        icon: '🔍',
+        title: 'PR 的完整流程',
+        text: `一个 Pull Request 的完整旅程是这样的：\n\n<strong>① 小花</strong>在自己的树枝写好内容，push 到 GitHub\n<strong>② 小花</strong>点击"New Pull Request"按钮，填写说明\n<strong>③ 你（负责人）</strong>收到通知，仔细阅读小花的修改\n<strong>④ 你</strong>可以写评论："这里写得太棒了！" 或 "这里能改一下吗？"\n<strong>⑤ 如果满意</strong>，你点击 <strong>Merge（合并）</strong>，小花的内容就加进来了！\n<strong>⑥ 如果不满意</strong>，小花根据评论修改后，重新提交`,
+        tip: '💡 这个过程叫"代码审查"（Code Review）。两个人互相检查，写出来的代码更好！'
+      },
+      {
+        type: 'quiz_pr_sim',
+        q: '🎮 模拟 PR！你是故事负责人，小花给你发来了 PR，请你来处理！',
+      },
+      {
+        type: 'quiz_choice',
+        q: '🙋 Pull Request 的主要目的是什么？',
+        options: [
+          { text: '🔍 请求别人审查并合并自己的修改', correct: true },
+          { text: '📥 从云端下载内容', correct: false },
+          { text: '🗑️ 删除别人的代码', correct: false },
+          { text: '🔒 给仓库加密', correct: false },
+        ],
+        okMsg: 'PR 就是礼貌地说：请帮我把这些修改合并进去！🙋',
+        errMsg: 'PR 是请求别人审查和合并你的修改！'
+      },
+      {
+        type: 'quiz_choice',
+        q: '💬 你在审查小花的 PR 时发现一个错别字，应该怎么做？',
+        options: [
+          { text: '💬 在 PR 里留评论，告诉小花哪里有错误', correct: true },
+          { text: '🤐 什么都不说，直接合并', correct: false },
+          { text: '❌ 直接拒绝，不给任何理由', correct: false },
+          { text: '🗑️ 删掉小花的仓库', correct: false },
+        ],
+        okMsg: '好习惯！代码审查就是要互相帮助，友善地指出问题！💬',
+        errMsg: '应该友善地留评论指出问题，这样小花才知道怎么改！'
+      },
+      {
+        type: 'quiz_order',
+        q: '📋 拖动排序：一个完整的 Pull Request 流程',
+        items: [
+          { id: 'a', text: '🌿 在新树枝上写内容并 commit', order: 0 },
+          { id: 'b', text: '✅ 负责人满意后点击 Merge 合并', order: 3 },
+          { id: 'c', text: '📤 git push 上传树枝到 GitHub', order: 1 },
+          { id: 'd', text: '🙋 在 GitHub 上创建 Pull Request', order: 2 },
+        ],
+        okMsg: '流程完全正确！这就是真实的团队合作方式！🌍',
+        errMsg: '顺序是：写内容commit → push上传 → 创建PR → 合并'
+      }
+    ]
+  },
+  {
+    id: 7,
+    icon: '💥',
+    title: '解决冲突！conflict',
+    desc: '两个人改了同一个地方',
+    color: '#FF5722',
+    steps: [
+      {
+        type: 'story',
+        icon: '💥',
+        title: '哎呀！发生冲突了！',
+        text: `你和小花<strong>同时</strong>修改了故事的第一句话！\n\n你写的是：<strong>"从前有一只小松鼠住在大树上。"</strong>\n小花写的是：<strong>"从前有一只小兔子住在大树上。"</strong>\n\nGit 不知道该用哪个版本，就发出了 <strong>⚠️ 冲突警告！</strong>\n\n这叫做 <strong>Merge Conflict（合并冲突）</strong>。就像两个人同时抢着写同一行日记！`,
+        tip: '💡 冲突不是错误！它只是说明：两个人同时修改了同一个地方，需要你来做决定！'
+      },
+      {
+        type: 'story',
+        icon: '🛠️',
+        title: '怎么解决冲突？',
+        text: `Git 会把冲突的地方标记出来，长这样：\n\n<strong><<<<<<< 你的版本</strong>\n从前有一只小松鼠住在大树上。\n<strong>=======</strong>\n从前有一只小兔子住在大树上。\n<strong>>>>>>>> 小花的版本</strong>\n\n你需要手动<strong>选择保留哪个</strong>，或者把两个合并：\n<strong>"从前有一只小松鼠和小兔子住在大树上。"</strong> 🎉\n\n修改完成后，重新 <strong>add 和 commit</strong> 就解决了！`,
+        tip: '💡 解决冲突的秘诀：和队友好好沟通，大家一起讨论用哪个版本！'
+      },
+      {
+        type: 'quiz_conflict_sim',
+        q: '🛠️ 模拟解决冲突！选择如何处理这个版本冲突：',
+      },
+      {
+        type: 'quiz_choice',
+        q: '💥 Merge Conflict（合并冲突）是什么意思？',
+        options: [
+          { text: '⚠️ 两个人同时修改了同一个地方，Git 不知道用哪个', correct: true },
+          { text: '🔥 电脑着火了，需要关机', correct: false },
+          { text: '🤯 代码写错了，有 Bug', correct: false },
+          { text: '📶 网络断开了', correct: false },
+        ],
+        okMsg: '完全正确！冲突就是两个修改"撞车"了，需要人来裁判！⚖️',
+        errMsg: '冲突是两个人同时改了同一个地方，Git 需要你来决定用哪个！'
+      },
+      {
+        type: 'quiz_match',
+        q: '🔗 连连看！把合作中的概念和描述配对',
+        leftItems: [
+          { id: 'l1', text: 'git clone' },
+          { id: 'l2', text: 'git pull' },
+          { id: 'l3', text: 'Pull Request' },
+          { id: 'l4', text: 'Code Review' },
+          { id: 'l5', text: 'Merge Conflict' },
+        ],
+        rightItems: [
+          { id: 'r2', text: '📥 拉取云端最新内容' },
+          { id: 'r4', text: '🔍 审查队友的代码' },
+          { id: 'r1', text: '🐑 复制仓库到本地' },
+          { id: 'r5', text: '💥 两人改了同一处' },
+          { id: 'r3', text: '🙋 请求合并到主分支' },
+        ],
+        pairs: { l1:'r1', l2:'r2', l3:'r3', l4:'r4', l5:'r5' }
+      }
+    ]
+  },
+  {
+    id: 8,
+    icon: '🍴',
+    title: 'Fork！复制别人的项目',
+    desc: '在别人的基础上创造',
+    color: '#8D6E63',
+    steps: [
+      {
+        type: 'story',
+        icon: '🍴',
+        title: 'Fork 是什么？',
+        text: `你在 GitHub 上发现了一本超好看的故事书！\n\n你想在这本书的基础上，<strong>创作自己的续集版本</strong>。\n\n但你不认识作者，没法直接在他的仓库上改。\n\n这时候，你可以用 <strong>Fork（叉子）</strong>🍴 ——\n把他的整本书<strong>复制一份到你自己的 GitHub 账号</strong>，\n从此这份复制版就是你的了，你想怎么改都行！`,
+        tip: '💡 Fork 的图标是叉子 🍴，就像用叉子把别人盘子里的食谱"叉"一份到你的盘子！'
+      },
+      {
+        type: 'story',
+        icon: '🔀',
+        title: 'Fork vs Clone，有什么不同？',
+        text: `<strong>Fork</strong> 和 <strong>clone</strong> 听起来很像，但其实不同：\n\n🍴 <strong>Fork</strong> —— 在 <u>GitHub 上</u>复制一份到<u>你的账号</u>，云端有两份仓库\n🐑 <strong>Clone</strong> —— 把仓库复制到<u>你的电脑</u>，本地有一份\n\n一般的流程是：\n<strong>先 Fork 到自己账号 → 再 Clone 到自己电脑</strong> → 然后修改！`,
+        tip: '💡 Fork 是 GitHub 网站上的操作，点按钮就行！Clone 是在电脑终端输入命令。'
+      },
+      {
+        type: 'quiz_fork_sim',
+        q: '🎮 模拟 Fork 流程！帮小明把这本故事书 Fork 到他自己的账号吧！',
+      },
+      {
+        type: 'story',
+        icon: '🌐',
+        title: 'Fork 之后怎么做？',
+        text: `Fork 完成后，你就有了自己的版本！接下来的流程是：\n\n<strong>① Fork</strong> 别人的仓库到自己的 GitHub 账号 🍴\n<strong>② Clone</strong> 自己账号的仓库到本地电脑 🐑\n<strong>③ 创建新 branch</strong>，在上面修改内容 🌿\n<strong>④ Commit + Push</strong> 保存并上传 📸📤\n<strong>⑤ 发送 Pull Request</strong> 给原作者，说"我改了一些，你要吗？" 🙋\n<strong>⑥ 原作者审查后决定</strong>要不要 Merge 🤝`,
+        tip: '💡 这就是全世界开源软件的合作方式！Linux、Python 都是这样被成千上万人共同改进的！'
+      },
+      {
+        type: 'quiz_choice',
+        q: '🍴 Fork 的主要作用是什么？',
+        options: [
+          { text: '🍴 把别人的仓库复制一份到自己的 GitHub 账号', correct: true },
+          { text: '🗑️ 删除别人的仓库', correct: false },
+          { text: '📧 给别人发消息', correct: false },
+          { text: '🔒 给仓库加锁', correct: false },
+        ],
+        okMsg: 'Fork = 叉一份到自己这里！从此独立发展！🍴',
+        errMsg: 'Fork 是把别人的仓库复制到自己账号，然后自己改！'
+      },
+      {
+        type: 'quiz_choice',
+        q: '🔀 Fork 和 Clone 有什么区别？',
+        options: [
+          { text: '🍴 Fork 是在 GitHub 上复制，Clone 是复制到自己电脑', correct: true },
+          { text: '🤔 它们完全一样，没有区别', correct: false },
+          { text: '💻 Fork 是复制到电脑，Clone 是在 GitHub 上复制', correct: false },
+          { text: '🔥 Fork 会删除原仓库', correct: false },
+        ],
+        okMsg: '完全正确！Fork 在云端，Clone 在本地！两个经常一起用！',
+        errMsg: 'Fork 是 GitHub 网站上的操作（云端复制），Clone 是把仓库下载到自己电脑！'
+      },
+      {
+        type: 'quiz_order',
+        q: '📋 拖动排序：Fork 之后给原作者贡献代码的完整流程',
+        items: [
+          { id: 'a', text: '🍴 在 GitHub 上 Fork 原仓库', order: 0 },
+          { id: 'b', text: '🙋 发 Pull Request 给原作者', order: 3 },
+          { id: 'c', text: '🐑 Clone 到自己的电脑', order: 1 },
+          { id: 'd', text: '📸📤 修改内容后 Commit 并 Push', order: 2 },
+        ],
+        okMsg: '流程完全正确！这就是开源贡献者每天做的事！🌍',
+        errMsg: '顺序是：Fork → Clone到本地 → 修改Commit Push → 发PR'
+      }
+    ]
+  },
+  {
+    id: 9,
+    icon: '🏆',
+    title: '大挑战！',
+    desc: '综合测试',
+    color: '#FFB300',
+    steps: [
+      {
+        type: 'quiz_choice',
+        q: '🎯 挑战1：你改好了一个文件，想保存这次的修改，正确的顺序是？',
+        options: [
+          { text: '✅ git add → git commit', correct: true },
+          { text: '❌ git commit → git add', correct: false },
+          { text: '❌ 直接 git push 就行', correct: false },
+          { text: '❌ git init → git commit', correct: false },
+        ],
+        okMsg: '顺序对了！先 add 再 commit！🌟',
+        errMsg: '记住：先 add（放进待拍区）再 commit（拍快照）！'
+      },
+      {
+        type: 'quiz_choice',
+        q: '🎯 挑战2：你想在不破坏原来故事的情况下，试验新结局，应该用什么？',
+        options: [
+          { text: '🌿 创建新的 branch（树枝）', correct: true },
+          { text: '🗑️ 先删掉旧的内容', correct: false },
+          { text: '📋 复制整个仓库', correct: false },
+          { text: '💥 直接在主干上改', correct: false },
+        ],
+        okMsg: 'branch 就是用来安全试验的！非常聪明！🧠',
+        errMsg: 'branch 树枝就是用来安全探索新想法的！'
+      },
+      {
+        type: 'quiz_choice',
+        q: '🎯 挑战3：新树枝写完了，想让主干也有这些内容，用什么命令？',
+        options: [
+          { text: '🤝 git merge', correct: true },
+          { text: '📤 git push', correct: false },
+          { text: '📥 git pull', correct: false },
+          { text: '📦 git init', correct: false },
+        ],
+        okMsg: 'merge = 合并！把树枝合回主干！太厉害了！🎊',
+        errMsg: '把树枝合并到主干，用的是 git merge 哦！'
+      },
+      {
+        type: 'quiz_fill',
+        q: '🎯 挑战4：填空！想让全世界看到你的代码，要把代码 ______ 到 GitHub',
+        answer: 'push',
+        hint: '提示：英文"推"是什么？',
+        okMsg: '完美！push 上传，pull 下载，你都记住了！🌍',
+        errMsg: '是 push（推送）哦！就是"推上去"的意思！'
+      }
+    ]
+  }
+];
+
+// =========== STATE ===========
+let state = {
+  view: 'home',       // home | chapter | complete | final
+  chapter: 0,
+  step: 0,
+  score: 0,
+  completedChapters: [],
+  selectedOpt: null,
+  feedback: null,
+  fillAnswer: '',
+  dragItems: null,
+  matchLeft: null,
+  matchRight: null,
+  matchedPairs: {},
+  matchErrors: {}
+};
+
+function setState(patch) {
+  Object.assign(state, patch);
+  render();
+}
+
+// =========== RENDER ===========
+function render() {
+  const root = document.getElementById('root');
+  if (state.view === 'home') root.innerHTML = renderHome();
+  else if (state.view === 'chapter') root.innerHTML = renderChapter();
+  else if (state.view === 'complete') root.innerHTML = renderComplete();
+  else if (state.view === 'final') root.innerHTML = renderFinal();
+  bindEvents();
+}
+
+function renderHome() {
+  const total = CHAPTERS.length;
+  const done = state.completedChapters.length;
+  const pct = Math.round(done / total * 100);
+  return `
+    <div class="score-area">
+      <div class="score-badge">⭐ 积分：${state.score}</div>
+      <div class="chapter-badge">📚 ${done}/${total} 章节</div>
+    </div>
+    <div class="progress-bar-wrap">
+      <div class="progress-bar" style="width:${pct}%"></div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🐿️</div>
+      <div class="card-title">欢迎来到代码树世界！</div>
+      <div class="card-story">
+        嗨！我是小松鼠 Git-Nuts！🐿️<br><br>
+        Git 是一个<strong>超级厉害的工具</strong>，能帮你记住你写的所有代码的每一个历史版本，就像魔法一样！<br><br>
+        全世界的程序员都在用它！今天，我们一起来学习 Git 的秘密吧！<br><br>
+        <strong>选一个章节开始冒险吧！👇</strong>
+      </div>
+    </div>
+    <div class="chapters-grid">
+      ${CHAPTERS.map((ch, i) => {
+        const isDone = state.completedChapters.includes(ch.id);
+        const isLocked = i > 0 && !state.completedChapters.includes(CHAPTERS[i-1].id);
+        return `<div class="chapter-card ${isDone?'done':''} ${isLocked?'locked':''}" 
+          data-chid="${ch.id}" style="border-color:${ch.color};box-shadow:4px 4px 0 ${ch.color}">
+          <div class="ch-icon">${ch.icon}</div>
+          <div class="ch-title">第${i+1}章：${ch.title}</div>
+          <div class="ch-desc">${ch.desc}</div>
+          ${isDone ? '<div style="color:#388E3C;font-size:0.85rem;margin-top:4px">已完成 ✅</div>' : ''}
+          ${isLocked ? '<div style="color:#999;font-size:0.8rem;margin-top:4px">🔒 完成前一章解锁</div>' : ''}
+        </div>`;
+      }).join('')}
+    </div>
+    ${done === CHAPTERS.length ? `
+      <div class="btn-row" style="margin-top:20px">
+        <button class="btn btn-replay" data-action="final">🏆 查看最终成就</button>
+      </div>` : ''}
+  `;
+}
+
+function renderChapter() {
+  const ch = CHAPTERS[state.chapter];
+  const step = ch.steps[state.step];
+  const total = ch.steps.length;
+  const pct = Math.round(state.step / total * 100);
+
+  // Mini map
+  const mapHtml = ch.steps.map((s, i) => {
+    const isDone = i < state.step;
+    const isCur = i === state.step;
+    const dot = `<div class="map-dot ${isDone?'done':''} ${isCur?'current':''}">${isDone?'✓':i+1}</div>`;
+    const line = i < ch.steps.length - 1 ? `<div class="map-line ${isDone?'done':''}"></div>` : '';
+    return dot + line;
+  }).join('');
+
+  let stepHtml = '';
+  if      (step.type === 'story')            stepHtml = renderStory(step);
+  else if (step.type === 'quiz_fork_sim')    stepHtml = renderForkSim(step);
+  else if (step.type === 'quiz_pr_sim')      stepHtml = renderPRSim(step);
+  else if (step.type === 'quiz_conflict_sim')stepHtml = renderConflictSim(step);
+  else if (step.type === 'quiz_choice')      stepHtml = renderQuizChoice(step);
+  else if (step.type === 'quiz_order')       stepHtml = renderQuizOrder(step);
+  else if (step.type === 'quiz_fill')        stepHtml = renderQuizFill(step);
+  else if (step.type === 'quiz_match')       stepHtml = renderQuizMatch(step);
+
+  return `
+    <div class="score-area">
+      <div class="score-badge">⭐ ${state.score}</div>
+      <div class="chapter-badge" style="background:${ch.color}">${ch.icon} ${ch.title}</div>
+    </div>
+    <div class="progress-bar-wrap">
+      <div class="progress-bar" style="width:${pct}%"></div>
+    </div>
+    <div class="mini-map">${mapHtml}</div>
+    <div class="card">
+      ${stepHtml}
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-home" data-action="home">🏠 回主页</button>
+    </div>
+  `;
+}
+
+function renderStory(step) {
+  const textHtml = step.text.replace(/\n/g, '<br>');
+  const treeHtml = step.treeDemo ? renderTreeDemo(step.treeDemo) : '';
+  return `
+    <div class="card-icon">${step.icon}</div>
+    <div class="card-title">${step.title}</div>
+    <div class="card-story">${textHtml}</div>
+    ${treeHtml}
+    ${step.cmd ? `<div class="cmd-box">${step.cmd}</div><div style="text-align:center;font-size:0.95rem;color:#555;margin-top:4px">👆 ${step.cmdDesc}</div>` : ''}
+    ${step.tip ? `<div class="tip-box">${step.tip}</div>` : ''}
+    <div class="btn-row">
+      <button class="btn btn-next" data-action="next">下一步 ➡️</button>
+    </div>
+  `;
+}
+
+function renderTreeDemo(demo) {
+  const mainNodes = demo.commits.map(c => `
+    <div class="commit-node main-node ${c.id===3?'head':''}" title="${c.label}">${c.emoji}</div>
+    <div class="branch-line"></div>
+  `).join('');
+  const featureNodes = demo.branch.map(c => `
+    <div class="commit-node feature-node" title="${c.label}">${c.emoji}</div>
+  `).join('');
+  return `
+    <div class="tree-area">
+      <div class="tree-ground"></div>
+      <div style="display:flex;justify-content:center;gap:30px;align-items:flex-end;padding-bottom:30px">
+        <div class="branch" style="align-items:center">
+          <div class="branch-label">main 主干</div>
+          ${mainNodes}
+          <div style="font-size:1.5rem">🌱</div>
+        </div>
+        <div class="branch" style="align-items:center;margin-bottom:60px">
+          <div class="branch-label feature">🌊 新树枝</div>
+          ${featureNodes}
+          <div class="branch-line" style="background:linear-gradient(180deg,#388E3C,#66BB6A)"></div>
+          <div style="font-size:1.2rem;color:#888">↗️</div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderQuizChoice(step) {
+  const opts = step.options.map((o, i) => {
+    let cls = '';
+    if (state.selectedOpt !== null) {
+      if (i === state.selectedOpt) cls = o.correct ? 'correct' : 'wrong';
+      else if (o.correct && state.selectedOpt !== null) cls = 'correct';
+    }
+    return `<button class="opt-btn ${cls}" data-opt="${i}" ${state.selectedOpt!==null?'disabled':''}>${o.text}</button>`;
+  }).join('');
+
+  const fbHtml = state.feedback ? `
+    <div class="feedback ${state.feedback.ok?'correct':'wrong'}">
+      ${state.feedback.ok ? '🎉 ' : '💪 '}${state.feedback.msg}
+    </div>` : '';
+
+  const nextBtn = state.feedback ? `<div class="btn-row"><button class="btn btn-next" data-action="next">继续 ➡️</button></div>` : '';
+
+  return `
+    <div class="card-icon">🤔</div>
+    <div class="quiz-q">${step.q}</div>
+    <div class="options-grid">${opts}</div>
+    ${fbHtml}
+    ${nextBtn}
+  `;
+}
+
+function renderQuizOrder(step) {
+  const items = state.dragItems || step.items.slice().sort(() => Math.random()-0.5);
+  if (!state.dragItems) state.dragItems = items;
+
+  const listHtml = items.map((item, i) =>
+    `<div class="drag-item" draggable="true" data-dragidx="${i}">
+      <span class="drag-handle">⠿</span>
+      <span>${item.text}</span>
+    </div>`
+  ).join('');
+
+  const fbHtml = state.feedback ? `
+    <div class="feedback ${state.feedback.ok?'correct':'wrong'}">
+      ${state.feedback.ok ? '🎉 ' : '💪 '}${state.feedback.msg}
+    </div>` : '';
+
+  const btns = state.feedback
+    ? `<div class="btn-row"><button class="btn btn-next" data-action="next">继续 ➡️</button></div>`
+    : `<div class="btn-row"><button class="btn btn-check" data-action="check-order">✅ 检查顺序</button></div>`;
+
+  return `
+    <div class="card-icon">📋</div>
+    <div class="quiz-q">${step.q}</div>
+    <p style="text-align:center;color:#888;font-size:0.9rem;margin-bottom:8px">（拖动排序）</p>
+    <div class="drag-area" id="drag-list">${listHtml}</div>
+    ${fbHtml}
+    ${btns}
+  `;
+}
+
+function renderQuizFill(step) {
+  const fbHtml = state.feedback ? `
+    <div class="feedback ${state.feedback.ok?'correct':'wrong'}">
+      ${state.feedback.ok ? '🎉 ' : '💪 '}${state.feedback.msg}
+    </div>` : '';
+
+  const btns = state.feedback
+    ? `<div class="btn-row"><button class="btn btn-next" data-action="next">继续 ➡️</button></div>`
+    : `<div class="btn-row"><button class="btn btn-check" data-action="check-fill">✅ 提交答案</button></div>`;
+
+  return `
+    <div class="card-icon">✍️</div>
+    <div class="quiz-q">${step.q}</div>
+    <p style="text-align:center;color:#888;font-size:0.9rem">${step.hint}</p>
+    <input class="fill-input" id="fill-input" type="text" placeholder="在这里输入答案..." 
+      value="${state.fillAnswer}" ${state.feedback?'disabled':''} autocomplete="off" spellcheck="false">
+    ${fbHtml}
+    ${btns}
+  `;
+}
+
+function renderQuizMatch(step) {
+  const leftHtml = step.leftItems.map(item => {
+    const isMatched = state.matchedPairs[item.id];
+    const isSelected = state.matchLeft === item.id;
+    const isErr = state.matchErrors[item.id];
+    let cls = isMatched ? 'matched-ok' : isErr ? 'matched-err' : isSelected ? 'selected' : '';
+    return `<div class="match-item ${cls}" data-ml="${item.id}" ${isMatched?'style="pointer-events:none"':''}>${item.text}</div>`;
+  }).join('');
+
+  const rightHtml = step.rightItems.map(item => {
+    const isMatched = Object.values(state.matchedPairs).includes(item.id);
+    const isSelected = state.matchRight === item.id;
+    const isErr = state.matchErrors[item.id];
+    let cls = isMatched ? 'matched-ok' : isErr ? 'matched-err' : isSelected ? 'selected' : '';
+    return `<div class="match-item right-side ${cls}" data-mr="${item.id}" ${isMatched?'style="pointer-events:none"':''}>${item.text}</div>`;
+  }).join('');
+
+  const allDone = Object.keys(state.matchedPairs).length === step.leftItems.length;
+
+  return `
+    <div class="card-icon">🔗</div>
+    <div class="quiz-q">${step.q}</div>
+    <p style="text-align:center;color:#888;font-size:0.9rem;margin-bottom:8px">点击左边，再点右边来配对</p>
+    <div class="match-area">
+      <div class="match-col">${leftHtml}</div>
+      <div class="match-col" style="align-items:flex-start">${rightHtml}</div>
+    </div>
+    ${allDone ? `
+      <div class="feedback correct">🎉 全部配对正确！你太厉害了！</div>
+      <div class="btn-row"><button class="btn btn-next" data-action="next">继续 ➡️</button></div>
+    ` : ''}
+  `;
+}
+
+function renderForkSim(step) {
+  const forkStage = state.forkStage || 0;
+  // 0 = initial, 1 = forked, 2 = cloned, 3 = done
+
+  const steps = ['🍴 Fork', '🐑 Clone', '✏️ 修改', '📤 Push'];
+  const stepsHtml = steps.map((s, i) => {
+    const cls = i < forkStage ? 'done' : i === forkStage ? 'active' : '';
+    const arrow = i < steps.length - 1 ? `<span class="fork-step-arrow">→</span>` : '';
+    return `<span class="fork-step-item ${cls}">${s}</span>${arrow}`;
+  }).join('');
+
+  const ownerRepos = `
+    <div class="repo-item">📖 魔法故事书</div>
+    <div class="repo-item">🎮 小游戏合集</div>`;
+
+  const myRepos = forkStage >= 1
+    ? `<div class="repo-item forked">🍴 魔法故事书 (forked)</div>`
+    : `<div style="color:#bbb;font-size:0.85rem;padding:8px 0">暂时还没有仓库…</div>`;
+
+  const universeHtml = `
+    <div class="fork-universe">
+      <div class="github-account owner">
+        <div class="account-avatar">👨‍💻</div>
+        <div class="account-name">原作者的账号</div>
+        ${ownerRepos}
+      </div>
+      <div class="fork-arrow">${forkStage === 0 ? '🍴' : '✅'}</div>
+      <div class="github-account mine ${forkStage >= 1 ? 'has-fork' : ''}">
+        <div class="account-avatar">🐿️</div>
+        <div class="account-name">你的账号</div>
+        ${myRepos}
+      </div>
+    </div>`;
+
+  let actionHtml = '';
+  if (forkStage === 0) {
+    actionHtml = `
+      <p style="text-align:center;color:#666;font-size:0.95rem;margin-bottom:10px">点击下方按钮，把原作者的仓库 Fork 过来！</p>
+      <div class="fork-btn-area">
+        <button class="fork-big-btn" data-forkaction="fork">🍴 Fork 这个仓库！</button>
+      </div>`;
+  } else if (forkStage === 1) {
+    actionHtml = `
+      <div class="feedback correct" style="margin-bottom:10px">🎉 Fork 成功！"魔法故事书"现在在你的账号里了！<br>接下来要把它 Clone 到你的电脑上…</div>
+      <div class="conflict-box" style="font-size:0.9rem;padding:10px 16px">
+        <span style="color:#FFD700">$</span> git clone https://github.com/<span style="color:#F48FB1">你的名字</span>/魔法故事书.git
+      </div>
+      <div class="fork-btn-area">
+        <button class="fork-big-btn" data-forkaction="clone" style="background:linear-gradient(135deg,#64B5F6,#1976D2);border-color:#0D47A1;box-shadow:5px 5px 0 #0D47A1">🐑 Clone 到电脑！</button>
+      </div>`;
+  } else if (forkStage === 2) {
+    actionHtml = `
+      <div class="feedback correct" style="margin-bottom:10px">🐑 Clone 完成！仓库在你电脑上了！<br>现在你可以修改内容，然后 commit + push！</div>
+      <div class="fork-btn-area">
+        <button class="fork-big-btn" data-forkaction="modify" style="background:linear-gradient(135deg,#A5D6A7,#388E3C);border-color:#1B5E20;box-shadow:5px 5px 0 #1B5E20">✏️ 修改并 Push！</button>
+      </div>`;
+  } else if (forkStage === 3) {
+    actionHtml = `
+      <div class="feedback correct">🌟 太棒了！你完成了完整的 Fork 流程！<br><br>
+      🍴 Fork → 🐑 Clone → ✏️ 修改 Commit → 📤 Push → 🙋 发 PR 给原作者！<br><br>
+      这就是全世界开源贡献者每天做的事！</div>
+      <div class="btn-row" style="margin-top:12px"><button class="btn btn-next" data-action="next">继续 ➡️</button></div>`;
+  }
+
+  return `
+    <div class="card-icon">🍴</div>
+    <div class="quiz-q">${step.q}</div>
+    <div class="fork-sim">
+      <div class="fork-steps-visual">${stepsHtml}</div>
+      ${universeHtml}
+      ${actionHtml}
+    </div>
+  `;
+}
+
+function renderPRSim(step) {
+  const prState = state.prSimState || 'open'; // open | commented | merged | rejected
+  const feedback = state.feedback;
+
+  const diffHtml = `
+    <div class="pr-diff">
+      <span class="del">- 从前有一只小松鼠住在大树上。</span><br>
+      <span class="add">+ 从前有一只勇敢的小松鼠住在大树上，她最喜欢收集橡果。</span>
+    </div>`;
+
+  let actionArea = '';
+  if (prState === 'open') {
+    actionArea = `
+      <p style="font-size:0.9rem;color:#888;margin-bottom:8px">你觉得小花的修改怎么样？</p>
+      <div class="pr-actions">
+        <button class="pr-btn approve" data-praction="approve">✅ 很棒！合并它</button>
+        <button class="pr-btn comment" data-praction="comment">💬 留个评论</button>
+        <button class="pr-btn reject"  data-praction="reject">❌ 不行，拒绝</button>
+      </div>`;
+  } else if (prState === 'commented') {
+    actionArea = `
+      <div class="feedback correct" style="margin:8px 0">💬 你留下了评论："写得很好，能再加一句她的心情吗？"<br>小花看到后很开心，修改并重新提交了！</div>
+      <div class="pr-actions">
+        <button class="pr-btn approve" data-praction="approve">✅ 现在合并它！</button>
+      </div>`;
+  } else if (prState === 'merged') {
+    actionArea = `<div class="feedback correct">🎉 合并成功！小花的内容现在在主故事里啦！这就是 Pull Request 的魔法！</div>
+      <div class="btn-row" style="margin-top:12px"><button class="btn btn-next" data-action="next">继续 ➡️</button></div>`;
+  } else if (prState === 'rejected') {
+    actionArea = `<div class="feedback wrong">😅 拒绝了但没给理由，小花不知道怎么改…<br>好的做法是：留评论说明原因，帮助队友进步！</div>
+      <div class="pr-actions">
+        <button class="pr-btn comment" data-praction="comment">💬 换个方式：留评论</button>
+      </div>`;
+  }
+
+  return `
+    <div class="card-icon">🙋</div>
+    <div class="quiz-q">${step.q}</div>
+    <div class="pr-card">
+      <div class="pr-header">
+        <div class="pr-avatar">🐰</div>
+        <div class="pr-meta">
+          <div class="pr-title">✨ 给故事开头加了更多细节</div>
+          <div class="pr-subtitle">小花 发起 · 树枝：feature/better-intro → main</div>
+        </div>
+        <div style="background:#E8F5E9;color:#2E7D32;padding:4px 12px;border-radius:20px;font-size:0.85rem;border:2px solid #4CAF50">${prState==='merged'?'已合并 ✅':'等待审查 👀'}</div>
+      </div>
+      <p style="font-size:0.95rem;color:#555;margin-bottom:8px">💬 小花的说明：我给故事开头加了更多描述，让读者更有代入感！</p>
+      ${diffHtml}
+      ${actionArea}
+    </div>
+  `;
+}
+
+function renderConflictSim(step) {
+  const chosen = state.conflictChosen; // null | 'a' | 'b' | 'both'
+  const feedback = state.feedback;
+
+  const choices = [
+    { id: 'a', text: '🐿️ 保留你的版本："从前有一只小松鼠住在大树上。"' },
+    { id: 'b', text: '🐰 保留小花的版本："从前有一只小兔子住在大树上。"' },
+    { id: 'both', text: '🤝 合并两个版本："从前有一只小松鼠和小兔子住在大树上。"', best: true },
+  ];
+
+  const choicesHtml = choices.map(c => {
+    let cls = '';
+    if (chosen) cls = c.id === chosen ? (c.best ? 'chosen-ok' : 'chosen-bad') : '';
+    return `<button class="conflict-choice ${cls}" data-conflict="${c.id}" ${chosen ? 'disabled' : ''}>${c.text}</button>`;
+  }).join('');
+
+  return `
+    <div class="card-icon">💥</div>
+    <div class="quiz-q">${step.q}</div>
+    <div class="conflict-box">
+      <span class="marker">&lt;&lt;&lt;&lt;&lt;&lt;&lt; 你的版本</span><br>
+      <span class="ver-a">从前有一只小松鼠住在大树上。</span><br>
+      <span class="marker">=======</span><br>
+      <span class="ver-b">从前有一只小兔子住在大树上。</span><br>
+      <span class="marker">&gt;&gt;&gt;&gt;&gt;&gt;&gt; 小花的版本</span>
+    </div>
+    <p style="text-align:center;color:#555;font-size:0.95rem;margin-bottom:8px">应该怎么处理这个冲突？</p>
+    <div class="conflict-choices">${choicesHtml}</div>
+    ${feedback ? `<div class="feedback ${feedback.ok?'correct':'wrong'}">${feedback.ok?'🎉 ':'💪 '}${feedback.msg}</div>` : ''}
+    ${feedback ? `<div class="btn-row"><button class="btn btn-next" data-action="next">继续 ➡️</button></div>` : ''}
+  `;
+}
+
+function renderComplete() {
+  const ch = CHAPTERS[state.chapter];
+  const stars = state.score >= 30 ? '⭐⭐⭐' : state.score >= 15 ? '⭐⭐' : '⭐';
+  return `
+    <div class="card">
+      <div class="completion">
+        <div class="trophy">🏆</div>
+        <h2>第${state.chapter+1}章完成！</h2>
+        <div class="stars">${stars}</div>
+        <p>你学完了《${ch.title}》！</p>
+        <p style="color:#FF9800;font-weight:700;font-size:1.2rem">本章学到了：${getChapterSummary(state.chapter)}</p>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-home" data-action="home">🏠 回主页选下一章</button>
+    </div>
+  `;
+}
+
+function renderFinal() {
+  const level = state.score >= 120 ? 'Git 大师🧙' : state.score >= 70 ? 'Git 学者📚' : 'Git 新手🌱';
+  return `
+    <div class="card">
+      <div class="completion">
+        <div class="trophy">🎖️</div>
+        <h2>恭喜你！全部完成！</h2>
+        <div class="stars">⭐⭐⭐</div>
+        <p style="font-size:1.3rem;color:#1a237e;margin:12px 0">你的称号：<strong>${level}</strong></p>
+        <p style="font-size:1.1rem;color:#666">总积分：${state.score} 分</p>
+        <div class="card-story" style="margin-top:16px;text-align:left">
+          <strong>你学会了什么？</strong><br><br>
+          📦 <strong>git init</strong> —— 创建魔法仓库<br>
+          🗂️ <strong>git add</strong> —— 放入待拍区<br>
+          📸 <strong>git commit</strong> —— 拍快照保存<br>
+          🌿 <strong>git branch</strong> —— 创建树枝<br>
+          🤝 <strong>git merge</strong> —— 合并树枝<br>
+          📤 <strong>git push</strong> —— 上传到云端<br>
+          🐑 <strong>git clone</strong> —— 复制仓库到本地<br>
+          📥 <strong>git pull</strong> —— 拉取最新内容<br>
+          🙋 <strong>Pull Request</strong> —— 请求合并审查<br>
+          🍴 <strong>Fork</strong> —— 复制别人的项目到自己账号<br>
+          💥 <strong>Merge Conflict</strong> —— 冲突要沟通解决
+        </div>
+        <p style="color:#888;margin-top:12px;font-size:0.9rem">🌍 你已经掌握了全世界程序员都在用的团队合作工具！</p>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-replay" data-action="replay">🔄 再玩一次</button>
+      <button class="btn btn-home" data-action="home">🏠 回主页</button>
+    </div>
+  `;
+}
+
+function getChapterSummary(id) {
+  const s = ['git init 创建仓库', 'git add & commit 保存快照', 'git branch 创建树枝', 'git merge 合并树枝', 'git push 上传分享', 'clone & pull 合作基础', 'Pull Request 代码审查', '解决 Merge Conflict 冲突', 'Fork 复制别人的项目', '综合运用所有命令'];
+  return s[id] || '';
+}
+
+// =========== EVENTS ===========
+let dragSrc = null;
+function bindEvents() {
+  // Chapter select
+  document.querySelectorAll('[data-chid]').forEach(el => {
+    el.addEventListener('click', () => {
+      const id = parseInt(el.dataset.chid);
+      const ch = CHAPTERS[id];
+      const isLocked = id > 0 && !state.completedChapters.includes(CHAPTERS[id-1].id);
+      if (isLocked) return;
+      setState({ view:'chapter', chapter:id, step:0, selectedOpt:null, feedback:null, fillAnswer:'', dragItems:null, matchLeft:null, matchRight:null, matchedPairs:{}, matchErrors:{}, prSimState:null, conflictChosen:null, forkStage:null });
+    });
+  });
+
+  // Action buttons
+  document.querySelectorAll('[data-action]').forEach(el => {
+    el.addEventListener('click', () => handleAction(el.dataset.action));
+  });
+
+  // Quiz options
+  document.querySelectorAll('[data-opt]').forEach(el => {
+    el.addEventListener('click', () => {
+      const i = parseInt(el.dataset.opt);
+      const ch = CHAPTERS[state.chapter];
+      const step = ch.steps[state.step];
+      const correct = step.options[i].correct;
+      if (correct) { state.score += 10; confetti(); }
+      setState({ selectedOpt: i, feedback: { ok: correct, msg: correct ? step.okMsg : step.errMsg } });
+    });
+  });
+
+  // Fill input
+  const fi = document.getElementById('fill-input');
+  if (fi) {
+    fi.addEventListener('input', e => { state.fillAnswer = e.target.value; });
+    fi.addEventListener('keydown', e => { if (e.key === 'Enter') handleAction('check-fill'); });
+  }
+
+  // Match items
+  document.querySelectorAll('[data-ml]').forEach(el => {
+    el.addEventListener('click', () => {
+      const id = el.dataset.ml;
+      setState({ matchLeft: state.matchLeft === id ? null : id, matchErrors: {} });
+      tryMatch();
+    });
+  });
+  document.querySelectorAll('[data-mr]').forEach(el => {
+    el.addEventListener('click', () => {
+      const id = el.dataset.mr;
+      setState({ matchRight: state.matchRight === id ? null : id, matchErrors: {} });
+      tryMatch();
+    });
+  });
+
+  // Fork simulation
+  document.querySelectorAll('[data-forkaction]').forEach(el => {
+    el.addEventListener('click', () => {
+      const action = el.dataset.forkaction;
+      const stageMap = { fork: 1, clone: 2, modify: 3 };
+      const nextStage = stageMap[action];
+      if (nextStage === 3) { state.score += 12; confetti(); }
+      setState({ forkStage: nextStage });
+    });
+  });
+
+  // PR simulation
+  document.querySelectorAll('[data-praction]').forEach(el => {
+    el.addEventListener('click', () => {
+      const action = el.dataset.praction;
+      if (action === 'approve') {
+        state.score += 10;
+        confetti();
+        setState({ prSimState: 'merged', feedback: null });
+      } else if (action === 'comment') {
+        state.score += 8;
+        setState({ prSimState: 'commented', feedback: null });
+      } else if (action === 'reject') {
+        setState({ prSimState: 'rejected', feedback: null });
+      }
+    });
+  });
+
+  // Conflict simulation
+  document.querySelectorAll('[data-conflict]').forEach(el => {
+    el.addEventListener('click', () => {
+      const id = el.dataset.conflict;
+      const isBest = id === 'both';
+      if (isBest) { state.score += 12; confetti(); }
+      setState({
+        conflictChosen: id,
+        feedback: {
+          ok: isBest,
+          msg: isBest
+            ? '完美！合并两个版本是最棒的解法！这样大家都开心，故事也更丰富！🌟'
+            : '这样做会丢掉其中一方的劳动成果哦！最好的方法是合并两个版本，让大家都满意！'
+        }
+      });
+    });
+  });
+
+  const dragList = document.getElementById('drag-list');
+  if (dragList) {
+    dragList.querySelectorAll('[data-dragidx]').forEach(item => {
+      item.addEventListener('dragstart', e => {
+        dragSrc = parseInt(item.dataset.dragidx);
+        item.classList.add('dragging');
+      });
+      item.addEventListener('dragend', () => item.classList.remove('dragging'));
+      item.addEventListener('dragover', e => { e.preventDefault(); item.classList.add('over'); });
+      item.addEventListener('dragleave', () => item.classList.remove('over'));
+      item.addEventListener('drop', e => {
+        e.preventDefault();
+        item.classList.remove('over');
+        const destIdx = parseInt(item.dataset.dragidx);
+        if (dragSrc !== null && dragSrc !== destIdx) {
+          const arr = [...state.dragItems];
+          const tmp = arr[dragSrc];
+          arr[dragSrc] = arr[destIdx];
+          arr[destIdx] = tmp;
+          setState({ dragItems: arr, feedback: null });
+        }
+      });
+    });
+  }
+}
+
+function tryMatch() {
+  if (!state.matchLeft || !state.matchRight) return;
+  const ch = CHAPTERS[state.chapter];
+  const step = ch.steps[state.step];
+  const correct = step.pairs[state.matchLeft] === state.matchRight;
+  if (correct) {
+    state.score += 4;
+    const newPairs = { ...state.matchedPairs, [state.matchLeft]: state.matchRight };
+    setState({ matchedPairs: newPairs, matchLeft: null, matchRight: null, matchErrors: {} });
+    if (Object.keys(newPairs).length === step.leftItems.length) confetti();
+  } else {
+    const errs = { [state.matchLeft]: true, [state.matchRight]: true };
+    setState({ matchErrors: errs, matchLeft: null, matchRight: null });
+    setTimeout(() => setState({ matchErrors: {} }), 700);
+  }
+}
+
+function handleAction(action) {
+  if (action === 'next') advanceStep();
+  else if (action === 'home') setState({ view:'home', selectedOpt:null, feedback:null, fillAnswer:'', dragItems:null, matchLeft:null, matchRight:null, matchedPairs:{}, matchErrors:{}, prSimState:null, conflictChosen:null, forkStage:null });
+  else if (action === 'check-order') checkOrder();
+  else if (action === 'check-fill') checkFill();
+  else if (action === 'final') setState({ view:'final' });
+  else if (action === 'replay') setState({ view:'home', score:0, completedChapters:[], chapter:0, step:0, selectedOpt:null, feedback:null, fillAnswer:'', dragItems:null, matchLeft:null, matchRight:null, matchedPairs:{}, matchErrors:{}, prSimState:null, conflictChosen:null, forkStage:null });
+}
+
+function advanceStep() {
+  const ch = CHAPTERS[state.chapter];
+  const nextStep = state.step + 1;
+  if (nextStep < ch.steps.length) {
+    setState({ step: nextStep, selectedOpt: null, feedback: null, fillAnswer: '', dragItems: null, matchLeft: null, matchRight: null, matchedPairs: {}, matchErrors: {}, prSimState: null, conflictChosen: null, forkStage: null });
+  } else {
+    const newCompleted = state.completedChapters.includes(state.chapter)
+      ? state.completedChapters
+      : [...state.completedChapters, state.chapter];
+    confetti();
+    setState({ view: 'complete', completedChapters: newCompleted });
+  }
+}
+
+function checkOrder() {
+  const ch = CHAPTERS[state.chapter];
+  const step = ch.steps[state.step];
+  const correct = state.dragItems.every((item, i) => item.order === i);
+  if (correct) { state.score += 15; confetti(); }
+  setState({ feedback: { ok: correct, msg: correct ? step.okMsg : step.errMsg } });
+}
+
+function checkFill() {
+  const ch = CHAPTERS[state.chapter];
+  const step = ch.steps[state.step];
+  const ans = state.fillAnswer.trim().toLowerCase();
+  const correct = ans === step.answer.toLowerCase();
+  if (correct) { state.score += 10; confetti(); }
+  setState({ feedback: { ok: correct, msg: correct ? step.okMsg : step.errMsg } });
+}
+
+// =========== CONFETTI ===========
+function confetti() {
+  const wrap = document.getElementById('confetti');
+  wrap.innerHTML = '';
+  const colors = ['#FFD700','#FF6F00','#4CAF50','#2196F3','#9C27B0','#E91E63','#00BCD4'];
+  for (let i = 0; i < 60; i++) {
+    const p = document.createElement('div');
+    p.className = 'confetti-piece';
+    p.style.cssText = `
+      left:${Math.random()*100}%;
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+      width:${8+Math.random()*10}px;
+      height:${8+Math.random()*10}px;
+      border-radius:${Math.random()>0.5?'50%':'2px'};
+      animation-duration:${1.5+Math.random()*2}s;
+      animation-delay:${Math.random()*0.5}s;
+    `;
+    wrap.appendChild(p);
+  }
+  setTimeout(() => wrap.innerHTML = '', 4000);
+}
+
+// =========== INIT ===========
+render();
+</script>
+</body>
+</html>
