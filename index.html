@@ -1199,8 +1199,413 @@ const CHAPTERS = [
       }
     ]
   },
+  // ===== ADVANCED CHAPTERS =====
   {
-    id: 9,
+    id: 10,
+    icon: '🔍',
+    title: 'diff！看看改了啥',
+    desc: '比较前后变化',
+    color: '#546E7A',
+    steps: [
+      {
+        type: 'story',
+        icon: '🔍',
+        title: '用放大镜看变化',
+        text: `你修改了一段故事，但写完之后突然忘记自己<strong>到底改了哪里</strong>！\n\n这时候用 <strong>git diff</strong> 就能看到：\n红色 ❌ 是你<strong>删掉的内容</strong>\n绿色 ✅ 是你<strong>加进去的内容</strong>\n\n就像拿着放大镜，把"改之前"和"改之后"<strong>并排对比</strong>，一眼就能发现不同！`,
+        cmd: 'git diff',
+        cmdDesc: '查看还没有 add 的修改内容',
+        tip: '💡 git diff --staged  看已经 add 但还没 commit 的修改；git diff HEAD 看所有未 commit 的修改。'
+      },
+      {
+        type: 'quiz_choice',
+        q: '🔍 git diff 的作用是什么？',
+        options: [
+          { text: '🔍 对比文件改了哪些地方，显示增减内容', correct: true },
+          { text: '🗑️ 删除所有修改', correct: false },
+          { text: '📤 把修改上传到云端', correct: false },
+          { text: '🎨 把代码染色', correct: false },
+        ],
+        okMsg: 'diff = difference（差异）！一眼看出改了什么！🔍',
+        errMsg: 'diff 是用来查看文件修改前后差异的工具！'
+      },
+      {
+        type: 'quiz_fill',
+        q: '✍️ 填空：想查看还没有 add 的修改内容，用 git ______',
+        answer: 'diff',
+        hint: '提示：英文"差异/不同"= ？',
+        okMsg: '正确！git diff 就是你的代码"变化放大镜"！',
+        errMsg: '是 diff 哦！difference（差异）的缩写！'
+      }
+    ]
+  },
+  {
+    id: 11,
+    icon: '🧳',
+    title: 'stash！暂时藏起来',
+    desc: '临时收起未完成的工作',
+    color: '#8D6E63',
+    steps: [
+      {
+        type: 'story',
+        icon: '🧳',
+        title: '紧急任务来了！',
+        text: `你正在写故事的第三章，写了一半，突然妈妈说："快去做作业！"\n\n但你不想 commit 一个<strong>没写完的内容</strong>，又不想丢掉已经写的部分…\n\n这时候用 <strong>git stash</strong>（藏匿）！\n就像把写了一半的稿子<strong>塞进抽屉里</strong>，先去做作业。\n等回来了，再把稿子从抽屉取出来继续写！`,
+        cmd: 'git stash',
+        cmdDesc: '把未完成的修改临时藏起来',
+        tip: '💡 git stash pop  —— 把藏起来的内容重新拿出来继续工作！'
+      },
+      {
+        type: 'quiz_choice',
+        q: '🧳 什么时候应该用 git stash？',
+        options: [
+          { text: '🚨 工作写到一半，需要临时切换去处理紧急任务', correct: true },
+          { text: '✅ 工作已经全部做完，准备提交', correct: false },
+          { text: '🗑️ 想永久删除这些修改', correct: false },
+          { text: '📤 想把代码上传到 GitHub', correct: false },
+        ],
+        okMsg: 'stash 就是"临时藏好，待会儿再用"！完全正确！🧳',
+        errMsg: 'stash 是在你需要临时中断当前工作时使用的！'
+      },
+      {
+        type: 'quiz_match',
+        q: '🔗 连一连！stash 的两个核心命令',
+        leftItems: [
+          { id: 'l1', text: 'git stash' },
+          { id: 'l2', text: 'git stash pop' },
+        ],
+        rightItems: [
+          { id: 'r2', text: '📤 把藏起来的内容重新取出' },
+          { id: 'r1', text: '🧳 把修改临时藏进抽屉' },
+        ],
+        pairs: { l1:'r1', l2:'r2' }
+      }
+    ]
+  },
+  {
+    id: 12,
+    icon: '↩️',
+    title: 'revert！撤销一次提交',
+    desc: '安全地"反悔"',
+    color: '#EF5350',
+    steps: [
+      {
+        type: 'story',
+        icon: '↩️',
+        title: '写错了，但不能删历史！',
+        text: `你上周的某次 commit 写了一个大 Bug，想把那次修改全部撤销。\n\n但如果直接删掉那次 commit，历史记录就乱了，团队里的其他人也会出问题。\n\n<strong>git revert</strong> 是更聪明的办法：\n它会创建一个<strong>新的 commit</strong>，内容是"把上次那个 commit 的修改全部反过来"。\n\n历史记录保留完整，而且代码回到了正确状态！`,
+        cmd: 'git revert abc1234',
+        cmdDesc: '撤销 abc1234 这次 commit 的所有修改（创建新的反向 commit）',
+        tip: '💡 abc1234 是 commit 的编号（hash）。用 git log 可以查看所有 commit 的编号！'
+      },
+      {
+        type: 'quiz_choice',
+        q: '↩️ git revert 和直接删除 commit 有什么不同？',
+        options: [
+          { text: '📝 revert 会新建一个"反向"commit，历史记录保持完整', correct: true },
+          { text: '🗑️ revert 会直接删掉那次 commit，历史消失', correct: false },
+          { text: '💥 revert 会删除整个仓库', correct: false },
+          { text: '🔒 revert 会加密历史记录', correct: false },
+        ],
+        okMsg: 'revert = 安全反悔！新建反向 commit，历史完好！✅',
+        errMsg: 'revert 的精髓是：不破坏历史，用新 commit 来"反向操作"！'
+      }
+    ]
+  },
+  {
+    id: 13,
+    icon: '🏷️',
+    title: 'tag！给版本贴标签',
+    desc: '记住重要的时刻',
+    color: '#F9A825',
+    steps: [
+      {
+        type: 'story',
+        icon: '🏷️',
+        title: '给故事的重要版本命名',
+        text: `你的故事写完了"第一版"，想给这个特别的时刻<strong>贴一个标签</strong>，就像书的封面写"第一版印刷"！\n\n在 Git 里，这叫做 <strong>tag（标签）</strong>。\n\n标签就像是一个<strong>永久书签</strong>，指向历史中的某一个 commit。\n\n通常用来标记软件的<strong>发布版本</strong>，比如 v1.0、v2.0！`,
+        cmd: 'git tag v1.0',
+        cmdDesc: '给当前的 commit 贴上 v1.0 这个标签',
+        tip: '💡 git tag  —— 查看所有标签。git push origin v1.0 —— 把标签推送到 GitHub！'
+      },
+      {
+        type: 'quiz_choice',
+        q: '🏷️ git tag 最常用来做什么？',
+        options: [
+          { text: '📦 标记软件的发布版本，如 v1.0、v2.5', correct: true },
+          { text: '🎨 给代码染上颜色', correct: false },
+          { text: '🔒 锁定某个文件不让修改', correct: false },
+          { text: '📧 给团队成员发邮件', correct: false },
+        ],
+        okMsg: 'tag 就是版本里程碑！v1.0 就从这里开始！🏷️',
+        errMsg: 'tag 是用来标记重要版本节点的，比如正式发布的 v1.0！'
+      }
+    ]
+  },
+  {
+    id: 14,
+    icon: '🗑️',
+    title: 'discard & reset！丢弃修改',
+    desc: '后悔了，全部不要了',
+    color: '#78909C',
+    steps: [
+      {
+        type: 'story',
+        icon: '🗑️',
+        title: '这些修改全部不要了！',
+        text: `你改了好几个文件，但改完之后觉得越改越乱，想<strong>全部放弃</strong>，回到最后一次 commit 的状态！\n\n<strong>git checkout -- 文件名</strong>  丢弃某个文件的修改\n<strong>git restore 文件名</strong>  （新版本的同等命令）\n<strong>git reset HEAD 文件名</strong>  把文件从待拍区移回来\n\n就像把写乱了的稿纸<strong>揉成一团扔掉</strong>，重新拿一张白纸！`,
+        cmd: 'git restore 故事.txt',
+        cmdDesc: '丢弃"故事.txt"这个文件的所有未提交修改',
+        tip: '⚠️ 注意：这个操作是真的丢弃！丢掉的修改找不回来了，要想清楚再用！'
+      },
+      {
+        type: 'quiz_choice',
+        q: '⚠️ 用 git restore 丢弃修改之后，这些修改能找回来吗？',
+        options: [
+          { text: '❌ 不能！这些修改会永久消失，用之前要想清楚', correct: true },
+          { text: '✅ 能，随时可以找回来', correct: false },
+          { text: '🤔 存在云端了，可以从 GitHub 找', correct: false },
+          { text: '💾 自动备份到电脑桌面了', correct: false },
+        ],
+        okMsg: '非常重要！restore 是真的丢弃，用前要三思！⚠️',
+        errMsg: 'restore 会永久丢弃修改，没有后悔药！所以要小心使用！'
+      },
+      {
+        type: 'quiz_choice',
+        q: '🗑️ 如果只是想把文件从"待拍区"移出来（但保留修改），应该用什么？',
+        options: [
+          { text: '📤 git restore --staged 文件名', correct: true },
+          { text: '🗑️ git restore 文件名（不带 --staged）', correct: false },
+          { text: '📸 git commit', correct: false },
+          { text: '🌿 git branch', correct: false },
+        ],
+        okMsg: '--staged 是关键！只从待拍区移除，修改内容还在！👍',
+        errMsg: '加上 --staged 才是从待拍区移除；不加会直接丢弃文件修改！'
+      }
+    ]
+  },
+  {
+    id: 15,
+    icon: '⏰',
+    title: 'reset！时光倒流',
+    desc: '把历史拨回去',
+    color: '#7E57C2',
+    steps: [
+      {
+        type: 'story',
+        icon: '⏰',
+        title: '时光机器！',
+        text: `<strong>git reset</strong> 更厉害，它可以把整个仓库的状态<strong>拨回到某一次 commit</strong>，就像时光机！\n\n有三种模式：\n\n🧸 <strong>--soft</strong>：回到那个 commit，但修改内容保留在待拍区\n📝 <strong>--mixed</strong>（默认）：回到那个 commit，修改内容保留但移出待拍区\n💥 <strong>--hard</strong>：回到那个 commit，所有修改全部消失！\n\n<strong>--hard 最危险！</strong>用之前要确认不需要那些修改了。`,
+        cmd: 'git reset --hard abc1234',
+        cmdDesc: '强制把仓库状态倒回到 abc1234 这次 commit',
+        tip: '💡 reset vs revert：reset 是"悄悄改历史"，revert 是"公开记录反悔"。团队合作里更推荐用 revert！'
+      },
+      {
+        type: 'quiz_choice',
+        q: '⏰ git reset --hard 和 git reset --soft 的区别是？',
+        options: [
+          { text: '💥 --hard 连修改内容也全删，--soft 保留修改在待拍区', correct: true },
+          { text: '🤷 两个完全一样，没有区别', correct: false },
+          { text: '⚡ --hard 跑得快，--soft 跑得慢', correct: false },
+          { text: '🔒 --hard 加密，--soft 不加密', correct: false },
+        ],
+        okMsg: 'hard = 硬核删除一切！soft = 温柔保留修改！记住了！💡',
+        errMsg: '--hard 会删除所有修改内容，--soft 只移动 commit 指针但保留修改！'
+      }
+    ]
+  },
+  {
+    id: 16,
+    icon: '🚀',
+    title: 'release！发布版本',
+    desc: '正式对外发布',
+    color: '#26A69A',
+    steps: [
+      {
+        type: 'story',
+        icon: '🚀',
+        title: '向全世界发布！',
+        text: `你的故事写完了，经过测试，可以<strong>正式对外发布</strong>给所有人看了！\n\n在 GitHub 上，Release（发布）是在 tag 的基础上，额外加上：\n\n📝 <strong>更新说明</strong>（这个版本新增了什么，修复了什么）\n📦 <strong>下载包</strong>（打包好的程序让用户下载）\n🏷️ <strong>版本号</strong>（比如 v1.0.0）\n\n它是你给用户的<strong>正式礼物包装盒</strong>🎁！`,
+        tip: '💡 Release 是 GitHub 网站上的操作：进入仓库 → Releases → Draft a new release → 选择 tag → 填写说明 → Publish！'
+      },
+      {
+        type: 'quiz_choice',
+        q: '🚀 GitHub Release 和 git tag 有什么关系？',
+        options: [
+          { text: '📦 Release 是在 tag 基础上加了更新说明和下载包的正式发布', correct: true },
+          { text: '🤔 两个完全一样的东西', correct: false },
+          { text: '🗑️ Release 会删除 tag', correct: false },
+          { text: '🔒 Release 会锁定代码不让修改', correct: false },
+        ],
+        okMsg: 'tag 是标记时间点，Release 是在那个标记上包装礼物送给用户！🎁',
+        errMsg: 'Release 是对用户发布的正式版本，包含说明和下载包，基于 tag！'
+      }
+    ]
+  },
+  {
+    id: 17,
+    icon: '🍒',
+    title: 'cherry-pick！摘樱桃',
+    desc: '只挑你想要的那个 commit',
+    color: '#E91E63',
+    steps: [
+      {
+        type: 'story',
+        icon: '🍒',
+        title: '只要这一颗樱桃！',
+        text: `小花的树枝上有 5 次 commit，你只想要其中<strong>第3次</strong>修改的内容，其他4次都不要。\n\n正常合并（merge）会把 5 次全都合进来。\n\n但 <strong>cherry-pick（摘樱桃）</strong> 可以让你<strong>精准挑选</strong>某一次（或几次）commit，只把那颗"樱桃"摘到你的树枝上！`,
+        cmd: 'git cherry-pick abc1234',
+        cmdDesc: '把 abc1234 这一次 commit 的内容应用到当前树枝',
+        tip: '💡 cherry-pick 多个 commit：git cherry-pick abc..def  可以摘一个范围内的所有 commit！'
+      },
+      {
+        type: 'quiz_choice',
+        q: '🍒 什么时候适合用 cherry-pick？',
+        options: [
+          { text: '🎯 只想要另一个树枝中某几次特定 commit 的内容', correct: true },
+          { text: '🔀 想把整个树枝所有修改都合并过来', correct: false },
+          { text: '🗑️ 想删除某次 commit', correct: false },
+          { text: '📤 想上传代码到 GitHub', correct: false },
+        ],
+        okMsg: 'cherry-pick = 精准摘樱桃！只要你挑中的那一颗！🍒',
+        errMsg: 'cherry-pick 是用来精准选取某个 commit 的，不是合并整个树枝！'
+      }
+    ]
+  },
+  {
+    id: 18,
+    icon: '🪢',
+    title: 'rebase！重新整理历史',
+    desc: '让提交历史更整洁',
+    color: '#5C6BC0',
+    steps: [
+      {
+        type: 'story',
+        icon: '🪢',
+        title: '把树枝嫁接到新地方',
+        text: `你在 feature 树枝上工作了好几天，main 主干也有很多新更新。\n\n用 <strong>merge</strong> 合并会产生一条"合并线"，历史图变复杂。\n\n<strong>rebase</strong> 则像<strong>把你的树枝剪下来，重新嫁接到 main 的最新位置</strong>，让历史记录变成一条<strong>干净的直线</strong>！\n\n就像重新整理日记本，把所有故事按顺序排好。`,
+        cmd: 'git rebase main',
+        cmdDesc: '把当前树枝的 commit 重新排列到 main 的最新位置之后',
+        tip: '⚠️ rebase 会改写历史，不要对已经 push 到共享仓库的树枝用 rebase！'
+      },
+      {
+        type: 'quiz_choice',
+        q: '🪢 rebase 和 merge 的主要区别是？',
+        options: [
+          { text: '📏 rebase 让历史变成直线更整洁，merge 会产生合并节点', correct: true },
+          { text: '🤷 两个效果完全一样', correct: false },
+          { text: '🚀 rebase 比 merge 快 10 倍', correct: false },
+          { text: '🔒 rebase 会加密代码', correct: false },
+        ],
+        okMsg: 'rebase = 整洁的直线历史！merge = 保留分叉记录！各有用途！',
+        errMsg: 'rebase 让历史变成干净的直线，merge 保留了分叉合并的完整记录！'
+      }
+    ]
+  },
+  {
+    id: 19,
+    icon: '🔎',
+    title: 'bisect！找到引入 Bug 的元凶',
+    desc: '二分法排查问题',
+    color: '#FF7043',
+    steps: [
+      {
+        type: 'story',
+        icon: '🔎',
+        title: '到底是哪次改动弄坏了程序？',
+        text: `程序有个 Bug，但你有 100 次 commit 的历史，不知道是哪次改动引入的！\n\n<strong>git bisect</strong> 用<strong>二分法</strong>帮你快速找到"罪魁祸首"：\n\n① 告诉 Git 一个<strong>坏的 commit</strong>（有 Bug）\n② 告诉 Git 一个<strong>好的 commit</strong>（没有 Bug）\n③ Git 自动跳到中间那次，问你：好还是坏？\n④ 这样一半一半排查，很快就能定位！\n\n100 次只需要检查 7 次就能找到！🎯`,
+        cmd: 'git bisect start\ngit bisect bad HEAD\ngit bisect good v1.0',
+        cmdDesc: '开始二分查找：标记当前（坏），标记 v1.0 之前（好）',
+        tip: '💡 找到后用 git bisect reset 结束查找，回到最新状态！'
+      },
+      {
+        type: 'quiz_choice',
+        q: '🔎 git bisect 的原理是什么？',
+        options: [
+          { text: '✂️ 用二分法，每次排除一半的 commit，快速定位问题', correct: true },
+          { text: '🐢 从第一次 commit 开始，一个一个慢慢检查', correct: false },
+          { text: '🎲 随机猜测哪次 commit 有问题', correct: false },
+          { text: '🤖 AI 自动修复所有 Bug', correct: false },
+        ],
+        okMsg: '二分法！100 次 commit 只需检查 7 次！数学很有用！🎯',
+        errMsg: 'bisect 用二分法，每次把范围缩小一半，效率超高！'
+      }
+    ]
+  },
+  {
+    id: 20,
+    icon: '📜',
+    title: 'reflog！找回丢失的 commit',
+    desc: 'Git 的黑匣子',
+    color: '#455A64',
+    steps: [
+      {
+        type: 'story',
+        icon: '📜',
+        title: '连 Git 都记得！',
+        text: `你不小心用了 <strong>git reset --hard</strong>，把重要的 commit 给弄丢了！\n\n别慌！Git 还有一个<strong>秘密日志</strong>，记录了你<strong>所有的操作历史</strong>，包括被"删掉"的 commit！\n\n这个秘密日志叫做 <strong>reflog</strong>（引用日志）。\n\n只要找到那个 commit 的编号，就能用 git reset --hard 把它<strong>救回来</strong>！`,
+        cmd: 'git reflog',
+        cmdDesc: '查看所有操作历史，找到"丢失"的 commit 编号',
+        tip: '💡 reflog 记录默认保留 90 天。只要在这段时间内，几乎所有误操作都能撤销！'
+      },
+      {
+        type: 'quiz_choice',
+        q: '📜 不小心 git reset --hard 弄丢了 commit，怎么找回来？',
+        options: [
+          { text: '📜 用 git reflog 找到 commit 编号，再 git reset --hard 恢复', correct: true },
+          { text: '😭 没救了，彻底丢失了', correct: false },
+          { text: '📧 发邮件给 GitHub 客服要回来', correct: false },
+          { text: '🔁 重新把代码敲一遍', correct: false },
+        ],
+        okMsg: 'reflog 是 Git 的黑匣子！几乎任何误操作都能救！📜',
+        errMsg: 'reflog 记录了所有操作，用它找到 commit 编号就能恢复！'
+      }
+    ]
+  },
+  {
+    id: 21,
+    icon: '🎣',
+    title: 'hooks！自动触发的魔法',
+    desc: '让 Git 自动帮你做事',
+    color: '#00897B',
+    steps: [
+      {
+        type: 'story',
+        icon: '🎣',
+        title: '鱼钩触发的魔法！',
+        text: `你想让 Git 在每次 commit 之前，<strong>自动检查</strong>有没有错别字；在每次 push 之后，<strong>自动通知</strong>团队成员…\n\n这些"当某件事发生时，自动做另一件事"的功能，叫做 <strong>Git Hooks（钩子）</strong>！\n\n就像鱼钩：一旦有鱼咬钩（触发事件），就自动拉线（执行脚本）！\n\nHooks 存放在仓库的 <strong>.git/hooks/</strong> 文件夹里。`,
+        tip: '💡 常用钩子：pre-commit（commit 前检查）、pre-push（push 前测试）、post-merge（合并后自动安装依赖）'
+      },
+      {
+        type: 'quiz_choice',
+        q: '🎣 Git Hooks 的作用是什么？',
+        options: [
+          { text: '🤖 在特定 Git 操作发生时，自动执行你写好的脚本', correct: true },
+          { text: '🐟 用来钓鱼的工具', correct: false },
+          { text: '🔒 给 Git 仓库加密', correct: false },
+          { text: '📧 自动发邮件给所有人', correct: false },
+        ],
+        okMsg: 'Hooks = 自动化魔法！commit 前检查、push 后部署，全自动！🎣',
+        errMsg: 'Hooks 是在 Git 操作节点上自动触发的脚本，实现自动化！'
+      },
+      {
+        type: 'quiz_match',
+        q: '🔗 连连看！常用 Hook 和它的触发时机',
+        leftItems: [
+          { id: 'l1', text: 'pre-commit' },
+          { id: 'l2', text: 'pre-push' },
+          { id: 'l3', text: 'post-merge' },
+        ],
+        rightItems: [
+          { id: 'r2', text: '📤 push 上传之前' },
+          { id: 'r3', text: '🤝 merge 合并之后' },
+          { id: 'r1', text: '📸 commit 提交之前' },
+        ],
+        pairs: { l1:'r1', l2:'r2', l3:'r3' }
+      }
+    ]
+  },
+  {
+    id: 22,
     icon: '🏆',
     title: '大挑战！',
     desc: '综合测试',
@@ -1290,6 +1695,38 @@ function renderHome() {
   const total = CHAPTERS.length;
   const done = state.completedChapters.length;
   const pct = Math.round(done / total * 100);
+
+  const sections = [
+    { label: '🌱 基础篇', ids: [0,1,2,3,4] },
+    { label: '👯 合作篇', ids: [5,6,7,8] },
+    { label: '🚀 进阶篇', ids: [10,11,12,13,14,15,16,17,18,19,20,21] },
+    { label: '🏆 大挑战', ids: [22] },
+  ];
+  const sectionFirstIds = new Set(sections.map(s => s.ids[0]).concat([22]));
+
+  const chaptersHtml = sections.map(sec => {
+    const cards = sec.ids.map(chId => {
+      const ch = CHAPTERS.find(c => c.id === chId);
+      if (!ch) return '';
+      const chIdx = CHAPTERS.indexOf(ch);
+      const isDone = state.completedChapters.includes(ch.id);
+      const prevCh = chIdx > 0 ? CHAPTERS[chIdx - 1] : null;
+      const isLocked = !sectionFirstIds.has(ch.id) && prevCh && !state.completedChapters.includes(prevCh.id);
+      return `<div class="chapter-card ${isDone?'done':''} ${isLocked?'locked':''}"
+        data-chid="${ch.id}" style="border-color:${ch.color};box-shadow:4px 4px 0 ${ch.color}">
+        <div class="ch-icon">${ch.icon}</div>
+        <div class="ch-title">${ch.title}</div>
+        <div class="ch-desc">${ch.desc}</div>
+        ${isDone ? '<div style="color:#388E3C;font-size:0.85rem;margin-top:4px">已完成 ✅</div>' : ''}
+        ${isLocked ? '<div style="color:#999;font-size:0.8rem;margin-top:4px">🔒 完成前一章解锁</div>' : ''}
+      </div>`;
+    }).join('');
+    return `
+      <div style="margin-bottom:6px;font-weight:700;color:#1a237e;font-size:1.05rem;padding:4px 2px 2px;border-bottom:2px dashed #FBC02D">${sec.label}</div>
+      <div class="chapters-grid" style="margin-bottom:18px">${cards}</div>
+    `;
+  }).join('');
+
   return `
     <div class="score-area">
       <div class="score-badge">⭐ 积分：${state.score}</div>
@@ -1308,20 +1745,7 @@ function renderHome() {
         <strong>选一个章节开始冒险吧！👇</strong>
       </div>
     </div>
-    <div class="chapters-grid">
-      ${CHAPTERS.map((ch, i) => {
-        const isDone = state.completedChapters.includes(ch.id);
-        const isLocked = i > 0 && !state.completedChapters.includes(CHAPTERS[i-1].id);
-        return `<div class="chapter-card ${isDone?'done':''} ${isLocked?'locked':''}" 
-          data-chid="${ch.id}" style="border-color:${ch.color};box-shadow:4px 4px 0 ${ch.color}">
-          <div class="ch-icon">${ch.icon}</div>
-          <div class="ch-title">第${i+1}章：${ch.title}</div>
-          <div class="ch-desc">${ch.desc}</div>
-          ${isDone ? '<div style="color:#388E3C;font-size:0.85rem;margin-top:4px">已完成 ✅</div>' : ''}
-          ${isLocked ? '<div style="color:#999;font-size:0.8rem;margin-top:4px">🔒 完成前一章解锁</div>' : ''}
-        </div>`;
-      }).join('')}
-    </div>
+    ${chaptersHtml}
     ${done === CHAPTERS.length ? `
       <div class="btn-row" style="margin-top:20px">
         <button class="btn btn-replay" data-action="final">🏆 查看最终成就</button>
@@ -1692,6 +2116,9 @@ function renderConflictSim(step) {
 function renderComplete() {
   const ch = CHAPTERS[state.chapter];
   const stars = state.score >= 30 ? '⭐⭐⭐' : state.score >= 15 ? '⭐⭐' : '⭐';
+  const nextChIdx = CHAPTERS.findIndex(c => c.id === state.chapter + 1);
+  const hasNext = nextChIdx !== -1;
+  const nextCh = hasNext ? CHAPTERS[nextChIdx] : null;
   return `
     <div class="card">
       <div class="completion">
@@ -1703,13 +2130,15 @@ function renderComplete() {
       </div>
     </div>
     <div class="btn-row">
-      <button class="btn btn-home" data-action="home">🏠 回主页选下一章</button>
+      ${hasNext ? `<button class="btn btn-next" data-action="next-chapter">➡️ 下一章：${nextCh.icon} ${nextCh.title}</button>` : ''}
+      <button class="btn btn-home" data-action="home">🏠 回主页</button>
     </div>
   `;
 }
 
 function renderFinal() {
-  const level = state.score >= 120 ? 'Git 大师🧙' : state.score >= 70 ? 'Git 学者📚' : 'Git 新手🌱';
+  const total = CHAPTERS.length;
+  const level = state.score >= 200 ? 'Git 大神⚡' : state.score >= 120 ? 'Git 大师🧙' : state.score >= 70 ? 'Git 学者📚' : 'Git 新手🌱';
   return `
     <div class="card">
       <div class="completion">
@@ -1717,22 +2146,17 @@ function renderFinal() {
         <h2>恭喜你！全部完成！</h2>
         <div class="stars">⭐⭐⭐</div>
         <p style="font-size:1.3rem;color:#1a237e;margin:12px 0">你的称号：<strong>${level}</strong></p>
-        <p style="font-size:1.1rem;color:#666">总积分：${state.score} 分</p>
-        <div class="card-story" style="margin-top:16px;text-align:left">
-          <strong>你学会了什么？</strong><br><br>
-          📦 <strong>git init</strong> —— 创建魔法仓库<br>
-          🗂️ <strong>git add</strong> —— 放入待拍区<br>
-          📸 <strong>git commit</strong> —— 拍快照保存<br>
-          🌿 <strong>git branch</strong> —— 创建树枝<br>
-          🤝 <strong>git merge</strong> —— 合并树枝<br>
-          📤 <strong>git push</strong> —— 上传到云端<br>
-          🐑 <strong>git clone</strong> —— 复制仓库到本地<br>
-          📥 <strong>git pull</strong> —— 拉取最新内容<br>
-          🙋 <strong>Pull Request</strong> —— 请求合并审查<br>
-          🍴 <strong>Fork</strong> —— 复制别人的项目到自己账号<br>
-          💥 <strong>Merge Conflict</strong> —— 冲突要沟通解决
+        <p style="font-size:1.1rem;color:#666">总积分：${state.score} 分 · 完成 ${state.completedChapters.length}/${total} 章</p>
+        <div class="card-story" style="margin-top:16px;text-align:left;font-size:0.95rem">
+          <strong>🌱 基础篇</strong><br>
+          📦 init · 📸 add/commit · 🌿 branch · 🤝 merge · ☁️ push<br><br>
+          <strong>👯 合作篇</strong><br>
+          🐑 clone · 📥 pull · 🙋 Pull Request · 👩 Conflict · 🍴 Fork<br><br>
+          <strong>🚀 进阶篇</strong><br>
+          🔍 diff · 🧳 stash · ↩️ revert · 🏷️ tag · 🗑️ discard · ⏰ reset<br>
+          🚀 release · 🍒 cherry-pick · 🪢 rebase · 🔎 bisect · 📜 reflog · 🎣 hooks
         </div>
-        <p style="color:#888;margin-top:12px;font-size:0.9rem">🌍 你已经掌握了全世界程序员都在用的团队合作工具！</p>
+        <p style="color:#888;margin-top:12px;font-size:0.9rem">🌍 你已经掌握了真正的 Git 专家技能！</p>
       </div>
     </div>
     <div class="btn-row">
@@ -1743,7 +2167,16 @@ function renderFinal() {
 }
 
 function getChapterSummary(id) {
-  const s = ['git init 创建仓库', 'git add & commit 保存快照', 'git branch 创建树枝', 'git merge 合并树枝', 'git push 上传分享', 'clone & pull 合作基础', 'Pull Request 代码审查', '解决 Merge Conflict 冲突', 'Fork 复制别人的项目', '综合运用所有命令'];
+  const s = {
+    0: 'git init 创建仓库', 1: 'git add & commit 保存快照', 2: 'git branch 创建树枝',
+    3: 'git merge 合并树枝', 4: 'git push 上传分享', 5: 'clone & pull 合作基础',
+    6: 'Pull Request 代码审查', 7: '解决 Merge Conflict 冲突', 8: 'Fork 复制别人的项目',
+    10: 'git diff 查看变化', 11: 'git stash 临时藏起来', 12: 'git revert 安全撤销',
+    13: 'git tag 版本标签', 14: 'discard 丢弃修改', 15: 'git reset 时光倒流',
+    16: 'GitHub Release 正式发布', 17: 'cherry-pick 精准摘 commit', 18: 'rebase 整洁历史',
+    19: 'bisect 二分找 Bug', 20: 'reflog 找回丢失 commit', 21: 'hooks 自动化钩子',
+    22: '综合运用所有命令'
+  };
   return s[id] || '';
 }
 
@@ -1751,11 +2184,13 @@ function getChapterSummary(id) {
 let dragSrc = null;
 function bindEvents() {
   // Chapter select
+  const sectionFirstIds = new Set([0, 5, 10, 22]);
   document.querySelectorAll('[data-chid]').forEach(el => {
     el.addEventListener('click', () => {
       const id = parseInt(el.dataset.chid);
-      const ch = CHAPTERS[id];
-      const isLocked = id > 0 && !state.completedChapters.includes(CHAPTERS[id-1].id);
+      const chIdx = CHAPTERS.findIndex(c => c.id === id);
+      const prevCh = chIdx > 0 ? CHAPTERS[chIdx - 1] : null;
+      const isLocked = !sectionFirstIds.has(id) && prevCh && !state.completedChapters.includes(prevCh.id);
       if (isLocked) return;
       setState({ view:'chapter', chapter:id, step:0, selectedOpt:null, feedback:null, fillAnswer:'', dragItems:null, matchLeft:null, matchRight:null, matchedPairs:{}, matchErrors:{}, prSimState:null, conflictChosen:null, forkStage:null });
     });
@@ -1892,6 +2327,12 @@ function tryMatch() {
 
 function handleAction(action) {
   if (action === 'next') advanceStep();
+  else if (action === 'next-chapter') {
+    const nextId = state.chapter + 1;
+    const nextCh = CHAPTERS.find(c => c.id === nextId);
+    if (nextCh) setState({ view:'chapter', chapter:nextId, step:0, selectedOpt:null, feedback:null, fillAnswer:'', dragItems:null, matchLeft:null, matchRight:null, matchedPairs:{}, matchErrors:{}, prSimState:null, conflictChosen:null, forkStage:null });
+    else setState({ view:'home' });
+  }
   else if (action === 'home') setState({ view:'home', selectedOpt:null, feedback:null, fillAnswer:'', dragItems:null, matchLeft:null, matchRight:null, matchedPairs:{}, matchErrors:{}, prSimState:null, conflictChosen:null, forkStage:null });
   else if (action === 'check-order') checkOrder();
   else if (action === 'check-fill') checkFill();
