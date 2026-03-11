@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🌳 代码树的故事 - Git 冒险游戏</title>
-<link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   :root {
     --sky: #87CEEB;
@@ -27,11 +27,14 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    font-family: 'ZCOOL KuaiLe', 'Noto Sans SC', sans-serif;
+    font-family: 'Nunito', 'Noto Sans SC', sans-serif;
+    font-weight: 400;
     background: linear-gradient(180deg, #87CEEB 0%, #B3E5FC 40%, #C8E6C9 100%);
     min-height: 100vh;
     color: var(--text);
     overflow-x: hidden;
+    letter-spacing: 0.03em;
+    line-height: 1.8;
   }
 
   /* CLOUDS */
@@ -83,11 +86,13 @@
 
   h1 {
     text-align: center;
-    font-size: 2.5rem;
+    font-size: 2.4rem;
+    font-weight: 900;
     color: #1a237e;
     text-shadow: 3px 3px 0 #FFD700, 5px 5px 0 #FF980044;
     margin-bottom: 4px;
-    letter-spacing: 2px;
+    letter-spacing: 4px;
+    font-family: 'Nunito', 'Noto Sans SC', sans-serif;
   }
   .subtitle {
     text-align: center;
@@ -178,20 +183,24 @@
   @keyframes wiggle { 0%,100%{transform:rotate(-5deg)} 50%{transform:rotate(5deg)} }
 
   .card-title {
-    font-size: 1.5rem;
+    font-size: 1.45rem;
+    font-weight: 800;
     color: #1a237e;
     text-align: center;
     margin-bottom: 12px;
+    letter-spacing: 0.04em;
+    font-family: 'Nunito', 'Noto Sans SC', sans-serif;
   }
   .card-story {
-    font-size: 1.1rem;
-    line-height: 1.9;
-    color: #333;
-    background: rgba(255,255,255,0.7);
-    border-radius: 14px;
-    padding: 14px 18px;
+    font-size: 1.08rem;
+    line-height: 2.1;
+    color: #2b2b2b;
+    background: rgba(255,255,255,0.75);
+    border-radius: 18px;
+    padding: 16px 20px;
     border-left: 5px solid #4CAF50;
     margin-bottom: 16px;
+    letter-spacing: 0.03em;
   }
   .card-story .emoji { font-size: 1.3rem; }
 
@@ -223,12 +232,14 @@
 
   /* QUIZ */
   .quiz-q {
-    font-size: 1.25rem;
-    font-weight: 700;
+    font-size: 1.2rem;
+    font-weight: 800;
     color: #1a237e;
     text-align: center;
     margin-bottom: 18px;
-    line-height: 1.6;
+    line-height: 1.7;
+    letter-spacing: 0.03em;
+    font-family: 'Nunito', 'Noto Sans SC', sans-serif;
   }
   .options-grid {
     display: grid;
@@ -240,14 +251,16 @@
   .opt-btn {
     background: white;
     border: 3px solid #1976D2;
-    border-radius: 16px;
-    padding: 14px 10px;
-    font-size: 1.05rem;
-    font-family: 'ZCOOL KuaiLe', sans-serif;
+    border-radius: 20px;
+    padding: 14px 12px;
+    font-size: 1.02rem;
+    font-family: 'Nunito', 'Noto Sans SC', sans-serif; font-weight: 700;
     cursor: pointer;
     transition: transform 0.15s, background 0.15s, box-shadow 0.15s;
     box-shadow: 3px 3px 0 #1976D2;
     color: #1a237e;
+    letter-spacing: 0.02em;
+    line-height: 1.5;
   }
   .opt-btn:hover:not(:disabled) {
     background: #E3F2FD;
@@ -388,7 +401,7 @@
     margin-top: 16px;
   }
   .btn {
-    font-family: 'ZCOOL KuaiLe', sans-serif;
+    font-family: 'Nunito', 'Noto Sans SC', sans-serif; font-weight: 700;
     font-size: 1.1rem;
     padding: 12px 28px;
     border-radius: 50px;
@@ -431,7 +444,7 @@
   }
   .chapter-card {
     background: white;
-    border-radius: 20px;
+    border-radius: 24px;
     border: 4px solid #FBC02D;
     padding: 20px 16px;
     text-align: center;
@@ -441,7 +454,7 @@
   }
   .chapter-card:hover { transform: translateY(-5px) rotate(-1deg); box-shadow: 6px 9px 0 #F9A825; }
   .chapter-card .ch-icon { font-size: 2.5rem; margin-bottom: 8px; }
-  .chapter-card .ch-title { font-size: 1rem; font-weight: 700; color: #1a237e; }
+  .chapter-card .ch-title { font-size: 1rem; font-weight: 800; color: #1a237e; font-family: 'Nunito', 'Noto Sans SC', sans-serif; letter-spacing: 0.02em; }
   .chapter-card .ch-desc { font-size: 0.85rem; color: #666; margin-top: 4px; }
   .chapter-card.locked { opacity: 0.5; cursor: not-allowed; filter: grayscale(1); }
   .chapter-card.done { border-color: #4CAF50; box-shadow: 4px 4px 0 #4CAF50; }
@@ -455,17 +468,17 @@
   }
   .trophy { font-size: 5rem; animation: trophyBounce 1s ease infinite alternate; }
   @keyframes trophyBounce { from{transform:scale(1) rotate(-5deg)} to{transform:scale(1.15) rotate(5deg)} }
-  .completion h2 { font-size: 2rem; color: #1a237e; margin: 12px 0 6px; }
+  .completion h2 { font-size: 2rem; font-weight: 800; color: #1a237e; margin: 12px 0 6px; font-family: 'Nunito', 'Noto Sans SC', sans-serif; }
   .completion p { font-size: 1.1rem; color: #555; margin-bottom: 16px; }
   .stars { font-size: 2rem; letter-spacing: 4px; }
 
   /* FILL BLANK */
   .fill-input {
     width: 100%;
-    font-family: 'ZCOOL KuaiLe', sans-serif;
+    font-family: 'Nunito', 'Noto Sans SC', sans-serif; font-weight: 700;
     font-size: 1.2rem;
     padding: 12px 16px;
-    border-radius: 14px;
+    border-radius: 18px;
     border: 3px solid #1976D2;
     background: white;
     color: #1a237e;
@@ -488,7 +501,7 @@
   .match-item {
     background: white;
     border: 3px solid #9C27B0;
-    border-radius: 14px;
+    border-radius: 18px;
     padding: 10px 16px;
     font-size: 1rem;
     cursor: pointer;
@@ -557,7 +570,7 @@
   @keyframes arrowPulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.2) rotate(5deg)} }
   .fork-btn-area { text-align: center; margin: 10px 0; }
   .fork-big-btn {
-    font-family: 'ZCOOL KuaiLe', sans-serif;
+    font-family: 'Nunito', 'Noto Sans SC', sans-serif; font-weight: 700;
     font-size: 1.3rem;
     padding: 14px 32px;
     border-radius: 50px;
@@ -632,7 +645,7 @@
   .pr-diff .del { color: #C62828; }
   .pr-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
   .pr-btn {
-    font-family: 'ZCOOL KuaiLe', sans-serif;
+    font-family: 'Nunito', 'Noto Sans SC', sans-serif; font-weight: 700;
     font-size: 1rem;
     padding: 10px 20px;
     border-radius: 50px;
@@ -670,7 +683,7 @@
     border-radius: 14px;
     padding: 12px 16px;
     cursor: pointer;
-    font-family: 'ZCOOL KuaiLe', sans-serif;
+    font-family: 'Nunito', 'Noto Sans SC', sans-serif; font-weight: 700;
     font-size: 1rem;
     box-shadow: 3px 3px 0 #7C4DFF;
     transition: transform 0.15s, background 0.15s;
@@ -1642,6 +1655,296 @@ const CHAPTERS = [
       }
     ]
   },
+  // ===== TOOLS CHAPTERS =====
+  {
+    id: 23,
+    icon: '📊',
+    title: 'status！查看当前状态',
+    desc: '看看仓库现在怎么样了',
+    color: '#43A047',
+    steps: [
+      {
+        type: 'story',
+        icon: '📊',
+        title: '仓库现在是什么状态？',
+        text: `你改了好几个文件，但不记得哪些已经 add 了、哪些还没有……\n\n这时候只要问一下 Git："<strong>你现在状态怎么样？</strong>"\n\nGit 会告诉你：\n\n🔴 <strong>红色文件</strong> —— 修改了但还没 add 到待拍区\n🟢 <strong>绿色文件</strong> —— 已经 add 了，等待 commit\n⬜ <strong>没有显示</strong> —— 没有改动，一切正常\n\n就像老师点名，让每个同学报告自己的状态！`,
+        cmd: 'git status',
+        cmdDesc: '查看当前仓库的状态：哪些文件改了、哪些在待拍区',
+        tip: '💡 git status 是最安全的命令！什么时候都可以用，只看不改，不会弄坏任何东西！'
+      },
+      {
+        type: 'quiz_choice',
+        q: '📊 git status 显示某个文件是红色，说明什么？',
+        options: [
+          { text: '文件已经 commit 保存好了', correct: false },
+          { text: '文件被删除了', correct: false },
+          { text: '文件修改了但还没有 add 到待拍区', correct: true },
+          { text: '文件上传到 GitHub 了', correct: false },
+        ],
+        okMsg: '红色 = 还没 add！绿色 = 已 add 等待 commit！',
+        errMsg: '红色文件是修改了但还没 add 的，要先 git add 把它放进待拍区！'
+      },
+      {
+        type: 'quiz_fill',
+        q: '✍️ 填空：想查看仓库当前状态，用 git ______',
+        answer: 'status',
+        hint: '提示：英文"状态"叫什么？',
+        okMsg: '正确！git status 是新手最常用的命令，随时可以查！',
+        errMsg: '是 status 哦！英文"状态" = status！'
+      }
+    ]
+  },
+  {
+    id: 24,
+    icon: '📖',
+    title: 'log！查看历史记录',
+    desc: '翻开过去的每一次快照',
+    color: '#00897B',
+    steps: [
+      {
+        type: 'story',
+        icon: '📖',
+        title: '翻开魔法笔记本的历史！',
+        text: `你已经 commit 了很多次，每次都拍了一张"快照"。\n\n但你怎么看到所有历史快照呢？\n\n用 <strong>git log</strong>，就像翻开魔法笔记本的<strong>目录页</strong>！\n\n你会看到每一次 commit 的：\n📅 <strong>时间</strong> —— 什么时候拍的\n👤 <strong>作者</strong> —— 谁拍的\n💬 <strong>备注</strong> —— 拍的时候写了什么说明\n🔑 <strong>编号</strong> —— 每张快照的唯一编号（很长的字母数字）`,
+        cmd: 'git log',
+        cmdDesc: '查看所有 commit 的历史记录',
+        tip: '💡 git log --oneline  让每条记录只显示一行，更简洁！git log -5 只看最近5条记录。'
+      },
+      {
+        type: 'quiz_choice',
+        q: '📖 git log 能告诉你什么信息？',
+        options: [
+          { text: '每次 commit 的时间、作者、备注说明和编号', correct: true },
+          { text: '文件现在被修改了哪些内容', correct: false },
+          { text: '远程仓库的地址', correct: false },
+          { text: '哪些文件还没有 add', correct: false },
+        ],
+        okMsg: 'log = 历史日志！时间、作者、备注、编号全都有！',
+        errMsg: 'git log 显示的是 commit 的历史记录，包括时间、作者和备注！'
+      },
+      {
+        type: 'quiz_match',
+        q: '🔗 连连看！区分这几个"查看"命令',
+        leftItems: [
+          { id: 'l1', text: 'git status' },
+          { id: 'l2', text: 'git log' },
+          { id: 'l3', text: 'git diff' },
+        ],
+        rightItems: [
+          { id: 'r2', text: '📖 查看历史 commit 记录' },
+          { id: 'r3', text: '🔍 查看文件修改了哪些内容' },
+          { id: 'r1', text: '📊 查看当前哪些文件改了' },
+        ],
+        pairs: { l1:'r1', l2:'r2', l3:'r3' }
+      }
+    ]
+  },
+  {
+    id: 25,
+    icon: '📡',
+    title: 'fetch！先看看再说',
+    desc: '下载但不合并',
+    color: '#1E88E5',
+    steps: [
+      {
+        type: 'story',
+        icon: '📡',
+        title: 'pull 和 fetch 有什么不同？',
+        text: `你知道 <strong>git pull</strong> 可以把云端最新内容拉到本地。\n\n但 pull 其实做了<strong>两件事</strong>：\n① 下载云端的新内容\n② 自动合并到你当前的代码\n\n有时候你只想<strong>先看看云端有什么新内容</strong>，还不想马上合并……\n\n这时候用 <strong>git fetch</strong>！\n\n就像快递到了，先放在门口，你可以先看看是什么包裹，决定好了再拆开！📦`,
+        cmd: 'git fetch',
+        cmdDesc: '下载云端的最新内容，但不自动合并到你的代码',
+        tip: '💡 fetch 之后，用 git diff HEAD origin/main 可以看看云端和你的代码有什么不同，确认没问题再 git merge 合并！'
+      },
+      {
+        type: 'quiz_choice',
+        q: '📡 git fetch 和 git pull 的区别是什么？',
+        options: [
+          { text: 'fetch 和 pull 完全一样', correct: false },
+          { text: 'fetch 只下载不合并，pull 下载并自动合并', correct: true },
+          { text: 'fetch 比 pull 下载得更多', correct: false },
+          { text: 'pull 只下载不合并，fetch 下载并合并', correct: false },
+        ],
+        okMsg: 'fetch = 先搬进门，自己决定什么时候拆！pull = 搬进来直接拆开！',
+        errMsg: 'fetch 只下载不合并，pull 则是下载后自动合并！fetch 更谨慎！'
+      },
+      {
+        type: 'quiz_choice',
+        q: '📦 什么时候更适合用 git fetch 而不是 git pull？',
+        options: [
+          { text: '想快速同步，直接用云端的内容覆盖', correct: false },
+          { text: '想先看看云端有哪些更新，确认安全后再合并', correct: true },
+          { text: '第一次下载整个仓库的时候', correct: false },
+          { text: '想把本地代码上传到云端', correct: false },
+        ],
+        okMsg: 'fetch 更谨慎！先看看，没问题再合并，是专业程序员的好习惯！',
+        errMsg: 'fetch 适合先检查云端变化，确认没问题后再手动合并，比直接 pull 更稳妥！'
+      }
+    ]
+  },
+  {
+    id: 26,
+    icon: '🙈',
+    title: 'ignore！让 Git 忽略某些文件',
+    desc: '有些文件不需要保存',
+    color: '#757575',
+    steps: [
+      {
+        type: 'story',
+        icon: '🙈',
+        title: '有些东西不需要保存！',
+        text: `你的项目文件夹里，有些文件是<strong>不需要放进 Git 仓库</strong>的，比如：\n\n🗑️ 临时文件（程序运行产生的垃圾）\n🔑 密码文件（绝对不能上传到 GitHub！）\n📦 下载的依赖包（太大了，别人可以自己下载）\n\n怎么告诉 Git："这些文件你别管！"\n\n只需要创建一个叫 <strong>.gitignore</strong> 的文件，把不想保存的文件名写进去，Git 就会自动忽略它们！\n\n就像告诉快递员："这几个房间你别进，只收其他房间的东西。"`,
+        cmd: '# 在 .gitignore 文件里写：\n密码.txt\n*.log\nnode_modules/',
+        cmdDesc: '把不想让 Git 追踪的文件名写进 .gitignore，支持 * 通配符',
+        tip: '💡 .gitignore 文件本身是需要 add 和 commit 的！这样整个团队都能用同一份忽略规则。'
+      },
+      {
+        type: 'quiz_choice',
+        q: '🙈 以下哪种文件最应该放进 .gitignore？',
+        options: [
+          { text: '项目的主要代码文件', correct: false },
+          { text: '写给团队看的说明文档', correct: false },
+          { text: '存有账号密码的配置文件', correct: true },
+          { text: '项目的图片素材', correct: false },
+        ],
+        okMsg: '密码绝对不能上传到 GitHub！一定要加进 .gitignore！🔒',
+        errMsg: '密码文件最危险！一旦上传到公开仓库，全世界都能看到！一定要 ignore！'
+      },
+      {
+        type: 'quiz_choice',
+        q: '🙈 .gitignore 文件本身需要 commit 吗？',
+        options: [
+          { text: '不需要，它是特殊文件，Git 自动处理', correct: false },
+          { text: '需要！这样整个团队都能共享同一套忽略规则', correct: true },
+          { text: '不需要，每次运行自动生成', correct: false },
+          { text: '不确定，随便都行', correct: false },
+        ],
+        okMsg: '.gitignore 要 commit！这样所有队友都用同一套规则，很重要！',
+        errMsg: '.gitignore 需要 add 和 commit，让团队所有人都用同样的忽略规则！'
+      }
+    ]
+  },
+  {
+    id: 27,
+    icon: '🕵️',
+    title: 'blame！查出是谁写的',
+    desc: '每一行代码都有作者',
+    color: '#6D4C41',
+    steps: [
+      {
+        type: 'story',
+        icon: '🕵️',
+        title: '这行代码是谁写的？',
+        text: `你发现代码里有一行奇怪的内容，想知道<strong>是谁写的、什么时候写的</strong>？\n\n用 <strong>git blame</strong>（侦探模式）！\n\n它会在文件的<strong>每一行旁边</strong>显示：\n👤 <strong>谁写的</strong>（作者名字）\n📅 <strong>什么时候写的</strong>（时间）\n🔑 <strong>在哪次 commit 里写的</strong>（编号）\n\n就像侦探查案，每一行代码都留下了"指纹"！🔍\n\n注意：<strong>blame</strong> 的意思是"指责"，但程序员用它不是为了骂人，而是为了找到原作者问清楚情况！`,
+        cmd: 'git blame 故事.txt',
+        cmdDesc: '查看"故事.txt"里每一行是谁写的、什么时候写的',
+        tip: '💡 在 GitHub 网站上，打开任意文件，点击右上角的"Blame"按钮，就能看到可视化的版本！'
+      },
+      {
+        type: 'quiz_choice',
+        q: '🕵️ git blame 可以告诉你什么？',
+        options: [
+          { text: '文件里有没有语法错误', correct: false },
+          { text: '每一行代码是谁写的、在哪次 commit 里写的', correct: true },
+          { text: '这个文件被修改了多少次', correct: false },
+          { text: '这行代码的运行速度', correct: false },
+        ],
+        okMsg: 'blame = 代码侦探！每行都有作者和时间戳，一查便知！🕵️',
+        errMsg: 'git blame 显示每一行的作者和对应的 commit，方便追踪代码来源！'
+      },
+      {
+        type: 'quiz_choice',
+        q: '🔍 为什么程序员使用 git blame？',
+        options: [
+          { text: '为了批评写出问题代码的人', correct: false },
+          { text: '为了找到某行代码的作者，方便沟通或了解背景', correct: true },
+          { text: '为了删除别人写的代码', correct: false },
+          { text: '为了给自己的代码加版权', correct: false },
+        ],
+        okMsg: '找作者是为了沟通，不是指责！团队合作靠的是互相帮助！🤝',
+        errMsg: 'blame 是为了找到原作者沟通了解背景，而不是为了指责！'
+      }
+    ]
+  },
+  {
+    id: 28,
+    icon: '📈',
+    title: 'shortlog！统计贡献排行榜',
+    desc: '看看谁贡献最多',
+    color: '#F4511E',
+    steps: [
+      {
+        type: 'story',
+        icon: '📈',
+        title: '谁是团队里最勤劳的人？',
+        text: `你们团队一起写了好几个月的代码，想知道<strong>每个人一共贡献了多少次 commit</strong>？\n\n用 <strong>git shortlog</strong>！\n\n它会把所有作者按名字归组，统计出每个人的 commit 数量，就像班级里的<strong>积分排行榜</strong>！🏆\n\n比如：\n小明：58 次\n小花：41 次\n小李：23 次\n\n大家的努力都被记录下来了！`,
+        cmd: 'git shortlog',
+        cmdDesc: '按作者统计 commit 次数，显示每个人的贡献列表',
+        tip: '💡 git shortlog -sn  只显示数量和名字，按次数从多到少排序。-s 是 summary（摘要），-n 是 number（排序）。'
+      },
+      {
+        type: 'quiz_choice',
+        q: '📈 git shortlog 最适合用来做什么？',
+        options: [
+          { text: '查看某次 commit 改了什么内容', correct: false },
+          { text: '统计每个团队成员提交了多少次 commit', correct: true },
+          { text: '查看文件的修改历史', correct: false },
+          { text: '比较两个版本之间的差异', correct: false },
+        ],
+        okMsg: 'shortlog = 贡献排行榜！一眼看出谁最勤劳！📈',
+        errMsg: 'git shortlog 是按作者统计 commit 数量的，用来了解团队贡献情况！'
+      },
+      {
+        type: 'quiz_fill',
+        q: '✍️ 填空：想统计每个人的 commit 贡献数量，用 git ________',
+        answer: 'shortlog',
+        hint: '提示：short（简短）+ log（日志）= ？',
+        okMsg: '正确！shortlog = 简短版日志，按人分组统计！',
+        errMsg: '是 shortlog 哦！short + log，按作者分组的简短日志！'
+      }
+    ]
+  },
+  {
+    id: 29,
+    icon: '📦',
+    title: 'archive！打包代码',
+    desc: '把代码装进礼品盒',
+    color: '#8E24AA',
+    steps: [
+      {
+        type: 'story',
+        icon: '📦',
+        title: '把代码打包成一个文件！',
+        text: `你想把项目的某个版本分享给朋友，但朋友不用 Git，只需要<strong>拿到代码文件就行</strong>。\n\n这时候用 <strong>git archive</strong>，把整个项目打包成一个 <strong>.zip 压缩文件</strong>！\n\n就像把礼物装进礼品盒 🎁，对方直接打开就能用，不需要懂 Git 的任何知识！\n\n你还可以指定<strong>某个历史版本</strong>来打包，比如"把 v1.0 那个时候的代码打包给我"！`,
+        cmd: 'git archive --format=zip HEAD > 项目打包.zip',
+        cmdDesc: '把当前最新版本的代码打包成 zip 文件',
+        tip: '💡 git archive --format=zip v1.0 > v1.0版本.zip  可以打包指定 tag 版本的代码！'
+      },
+      {
+        type: 'quiz_choice',
+        q: '📦 git archive 的主要用途是什么？',
+        options: [
+          { text: '删除旧版本的代码', correct: false },
+          { text: '把代码打包成压缩文件，方便分享给不用 Git 的人', correct: true },
+          { text: '把代码上传到 GitHub', correct: false },
+          { text: '备份整个 Git 仓库的历史', correct: false },
+        ],
+        okMsg: 'archive = 打包礼品盒！让不用 Git 的朋友也能直接用你的代码！🎁',
+        errMsg: 'git archive 把代码打包成 zip，让任何人都能直接使用，无需懂 Git！'
+      },
+      {
+        type: 'quiz_choice',
+        q: '🎁 用 git archive 打包时，可以指定打包哪个版本吗？',
+        options: [
+          { text: '不能，只能打包最新版本', correct: false },
+          { text: '只能打包第一次 commit 的版本', correct: false },
+          { text: '可以！可以指定某个 tag 或 commit 来打包那个时候的代码', correct: true },
+          { text: '只能打包某个树枝，不能指定版本', correct: false },
+        ],
+        okMsg: '可以指定任意版本！这和 tag 配合起来非常好用！📦',
+        errMsg: '可以指定 tag 或 commit 编号来打包那个特定版本，非常灵活！'
+      }
+    ]
+  },
   {
     id: 22,
     icon: '🏆',
@@ -1876,6 +2179,7 @@ function renderHome() {
     { label: '🌱 基础篇', ids: [0,1,2,3,4] },
     { label: '👯 合作篇', ids: [5,6,7,8] },
     { label: '🚀 进阶篇', ids: [10,11,12,13,14,15,16,17,18,19,20,21] },
+    { label: '🛠️ 工具篇', ids: [23,24,25,26,27,28,29] },
     { label: '🏆 大挑战', ids: [22] },
   ];
   const sectionFirstIds = new Set(sections.map(s => s.ids[0]).concat([22]));
@@ -2340,7 +2644,9 @@ function renderFinal() {
           🐑 clone · 📥 pull · 🙋 Pull Request · 👩 Conflict · 🍴 Fork<br><br>
           <strong>🚀 进阶篇</strong><br>
           🔍 diff · 🧳 stash · ↩️ revert · 🏷️ tag · 🗑️ discard · ⏰ reset<br>
-          🚀 release · 🍒 cherry-pick · 🪢 rebase · 🔎 bisect · 📜 reflog · 🎣 hooks
+          🚀 release · 🍒 cherry-pick · 🪢 rebase · 🔎 bisect · 📜 reflog · 🎣 hooks<br><br>
+          <strong>🛠️ 工具篇</strong><br>
+          📊 status · 📖 log · 📡 fetch · 🙈 ignore · 🕵️ blame · 📈 shortlog · 📦 archive
         </div>
         <p style="color:#888;margin-top:12px;font-size:0.9rem">🌍 你已经掌握了真正的 Git 专家技能！</p>
       </div>
@@ -2359,8 +2665,11 @@ function getChapterSummary(id) {
     6: 'Pull Request 代码审查', 7: '解决 Merge Conflict 冲突', 8: 'Fork 复制别人的项目',
     10: 'git diff 查看变化', 11: 'git stash 临时藏起来', 12: 'git revert 安全撤销',
     13: 'git tag 版本标签', 14: 'discard 丢弃修改', 15: 'git reset 时光倒流',
-    16: 'GitHub Release 正式发布', 17: 'cherry-pick 精准摘 commit', 18: 'rebase 整洁历史',
-    19: 'bisect 二分找 Bug', 20: 'reflog 找回丢失 commit', 21: 'hooks 自动化钩子',
+    16: 'GitHub Release 正式发布', 17: 'cherry-pick 精准摘 commit', 18: 'rebase 重新排队',
+    19: 'bisect 猜数字找 Bug', 20: 'reflog 找回丢失 commit', 21: 'hooks 自动化钩子',
+    23: 'git status 查看当前状态', 24: 'git log 查看历史记录', 25: 'git fetch 先看再合并',
+    26: '.gitignore 忽略不需要的文件', 27: 'git blame 查出代码作者', 28: 'git shortlog 贡献排行榜',
+    29: 'git archive 打包代码',
     22: '综合运用所有命令'
   };
   return s[id] || '';
@@ -2370,7 +2679,7 @@ function getChapterSummary(id) {
 let dragSrc = null;
 function bindEvents() {
   // Chapter select
-  const sectionFirstIds = new Set([0, 5, 10, 22]);
+  const sectionFirstIds = new Set([0, 5, 10, 23, 22]);
   document.querySelectorAll('[data-chid]').forEach(el => {
     el.addEventListener('click', () => {
       const id = parseInt(el.dataset.chid);
